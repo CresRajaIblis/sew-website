@@ -9,11 +9,8 @@ class Product extends Model
 {
     use HasFactory;
 
-    /**
-     * Atribut yang dapat diisi secara massal.
-     *
-     * @var array<int, string>
-     */
+    protected $table = 'products'; // Sesuaikan jika nama tabel berbeda
+
     protected $fillable = [
         'name',
         'description',
@@ -29,20 +26,12 @@ class Product extends Model
         'colors',
     ];
 
-    /**
-     * Atribut yang harus di-cast ke tipe bawaan.
-     * Mengkonversi kolom 'colors' dari JSON string ke array PHP secara otomatis.
-     *
-     * @var array<string, string>
-     */
+    // Penting: Ubah kolom JSON menjadi Array otomatis
     protected $casts = [
         'colors' => 'array',
+        'rating' => 'float',
+        'price' => 'integer',
+        'old_price' => 'integer',
+        'reviews_count' => 'integer',
     ];
-
-    /**
-     * Atribut tambahan yang harus diakses dari model (contoh: 'icon' dari data dummy Anda)
-     * Dalam kasus data ini, kita akan menggunakan 'image_url' untuk icon.
-     * Jika Anda ingin menggunakan 'icon' sebagai properti terpisah dari 'image_url', 
-     * tambahkan kolom baru di migrasi atau definisikan Accessor (getIconAttribute).
-     */
 }

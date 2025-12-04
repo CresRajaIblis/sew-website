@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\UserOrderController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CatalogueController; // Pastikan ini ada
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -21,7 +22,8 @@ use Illuminate\Support\Facades\Auth;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::post('/contact', [HomeController::class, 'submitContact'])->name('contact.submit');
 Route::get('/about', function () { return view('user.about'); })->name('about');
-Route::get('/catalogue', function () { return view('user.catalogue'); })->name('catalogue');
+
+
 Route::post('/checkout', [UserOrderController::class, 'checkout'])->name('checkout.process');
 
 
@@ -45,7 +47,7 @@ Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallbac
 
 
 // ==========================================
-// 3. DASHBOARD & REDIRECT (FIX RUTE USER)
+// 3. DASHBOARD & REDIRECT
 // ==========================================
 
 Route::middleware(['auth'])->get('/home', function () {
@@ -53,51 +55,44 @@ Route::middleware(['auth'])->get('/home', function () {
     if ($role === 'admin') return redirect()->route('admin.dashboard');
     if ($role === 'pegawai') return redirect()->route('pegawai.dashboard');
     
-    // FIX KRITIS: Redirect ke rute baru: user.katalog
-    return redirect()->route('user.katalog'); 
+    // Redirect User ke Katalog Saya
+    return redirect()->route('catalogue'); 
 })->name('dashboard_redirect');
 
 
 // RUTE DASHBOARD USER (NAMA BARU: user.katalog)
 Route::middleware(['auth'])->group(function () {
-    // Memanggil fungsi index (yang aman)
-    Route::get('/katalog-saya', [UserOrderController::class, 'index'])->name('user.katalog');
+    // ⚠️ PASTIKAN UserOrderController::index JUGA MENGIRIM $products
+    Route::get('/catalogue', [CatalogueController::class, 'index'])->name('catalogue');
 });
 
 
 // ==========================================
-// RUTE ADMIN YANG DILENGKAPI
+// 4. RUTE ADMIN
 // ==========================================
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    // --- Dashboard & View Routes ---
     Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
     Route::get('/akun', [AdminController::class, 'akun'])->name('akun');
     Route::get('/pesanan', [AdminController::class, 'pesanan'])->name('pesanan');
     Route::get('/keuangan', [AdminController::class, 'keuangan'])->name('keuangan');
     Route::get('/ulasan', [AdminController::class, 'ulasan'])->name('ulasan');
     
-    // --- CRUD Akun Staf/Admin ---
     Route::post('/akun/simpan', [AdminController::class, 'simpanAkun'])->name('akun.simpan');
     Route::delete('/akun/{id}', [AdminController::class, 'hapusAkun'])->name('akun.delete_staf'); 
     
-    // --- CRUD Akun Pelanggan (User) ---
     Route::post('/customer/simpan', [AdminController::class, 'simpanCustomer'])->name('customer.simpan');
     Route::put('/customer/{id}', [AdminController::class, 'updateCustomer'])->name('customer.update');
     Route::delete('/customer/{id}', [AdminController::class, 'hapusCustomer'])->name('hapus.customer');
     
-    // --- CRUD Pesanan (Input Manual & Update Status) ---
     Route::post('/pesanan/simpan', [AdminController::class, 'simpanPesanan'])->name('pesanan.simpan');
-    Route::put('/pesanan/status/{id}', [AdminController::class, 'updateStatusPesanan'])->name('pesanan.update_status'); // Rute baru untuk update status
-    // Tambahkan juga untuk update detail pesanan jika diperlukan, tapi fokus ke status/manual input
+    Route::put('/pesanan/status/{id}', [AdminController::class, 'updateStatusPesanan'])->name('pesanan.update_status');
     
-    // --- CRUD Transaksi Keuangan ---
     Route::post('/transaksi/simpan', [AdminController::class, 'simpanTransaksi'])->name('transaksi.simpan');
     Route::put('/transaksi/{id}', [AdminController::class, 'updateTransaksi'])->name('transaksi.update');
     Route::delete('/transaksi/{id}', [AdminController::class, 'hapusTransaksi'])->name('transaksi.hapus');
     
-    // --- CRUD Ulasan ---
     Route::post('/ulasan/simpan', [AdminController::class, 'simpanUlasan'])->name('ulasan.simpan');
-    Route::put('/ulasan/{id}', [AdminController::class, 'updateUlasan'])->name('ulasan.update'); // Update Ulasan ditambahkan
+    Route::put('/ulasan/{id}', [AdminController::class, 'updateUlasan'])->name('ulasan.update');
     Route::delete('/ulasan/{id}', [AdminController::class, 'hapusUlasan'])->name('ulasan.hapus');
 });
 

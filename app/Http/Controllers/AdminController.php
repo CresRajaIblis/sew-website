@@ -33,7 +33,14 @@ class AdminController extends Controller
             $pendapatan = Pesanan::whereDate('updated_at', $tanggal)->where('status', 'selesai')->sum('total_harga'); 
             $pendapatanHarian[] = $pendapatan;
         }
-        $pesananTerakhir = Pesanan::orderBy('id', 'desc')->take(10)->get();
+        $pesananTerakhir = Pesanan::with('detail')->orderBy('id', 'desc')->take(10)->get();
+
+        // Query Top Pesanan (Sudah benar mengelompokkan berdasarkan nama_produk)
+        $topPesanan = DetailPesanan::select('nama_produk', DB::raw('SUM(jumlah) as total_terjual'))
+                        ->groupBy('nama_produk')
+                        ->orderByDesc('total_terjual')
+                        ->take(3)
+                        ->get();
         // Pastikan nama_produk di DetailPesanan relevan, atau gunakan ID jika ada
         $topPesanan = DetailPesanan::select('nama_produk', DB::raw('SUM(jumlah) as total_terjual'))->groupBy('nama_produk')->orderByDesc('total_terjual')->take(3)->get();
         $statusMesin = [
@@ -47,6 +54,7 @@ class AdminController extends Controller
             'labelHari', 'pendapatanHarian', 'pesananTerakhir', 'topPesanan', 'statusMesin'
         ));
     }
+    
     
     
     public function pesanan()
@@ -67,14 +75,40 @@ class AdminController extends Controller
     }
     
     public function keuangan(Request $request) 
-    { 
-        $query = Transaksi::orderBy('tanggal', 'desc');
-        $transaksis = $query->get();
-        $pemasukan = $transaksis->where('tipe', 'pemasukan')->where('status', 'lunas')->sum('nominal');
-        $pengeluaran = $transaksis->where('tipe', 'pengeluaran')->where('status', 'lunas')->sum('nominal');
-        $labaBersih = $pemasukan - $pengeluaran;
-        return view('admin.keuangan', compact('transaksis', 'pemasukan', 'pengeluaran', 'labaBersih')); 
-    }
+{ 
+    $query = Transaksi::orderBy('tanggal', 'desc');
+
+    // --- LOGIKA FILTER WAKTU ---
+    $filter = $request->input('filter', 'bulanan'); // Default: bulanan
+    $startDate = $request->input('start_date');
+    $endDate = $request->input('end_date');
+
+    if ($startDate && $endDate) {
+        // Filter Tanggal Manual
+        $query->whereBetween('tanggal', [$startDate, $endDate]);
+    } elseif ($filter === 'harian') {
+        // Filter Harian (Hari Ini)
+        $query->whereDate('tanggal', today());
+    } elseif ($filter === 'mingguan') {
+        // Filter Mingguan (7 Hari Terakhir)
+        $query->where('tanggal', '>=', now()->subDays(6)->startOfDay());
+    } elseif ($filter === 'bulanan') {
+        // Filter Bulanan (Bulan Ini)
+        $query->whereYear('tanggal', now()->year)
+              ->whereMonth('tanggal', now()->month);
+    } 
+    // Jika filter === 'semua', tidak perlu menambahkan kondisi WHERE
+
+    $transaksis = $query->get();
+    
+    // --- PERHITUNGAN STATISTIK ---
+    // Pastikan perhitungan ini hanya menggunakan data $transaksis yang sudah difilter
+    $pemasukan = $transaksis->where('tipe', 'pemasukan')->where('status', 'lunas')->sum('nominal');
+    $pengeluaran = $transaksis->where('tipe', 'pengeluaran')->where('status', 'lunas')->sum('nominal');
+    $labaBersih = $pemasukan - $pengeluaran;
+    
+    return view('admin.keuangan', compact('transaksis', 'pemasukan', 'pengeluaran', 'labaBersih')); 
+}
 
     // --- CRUD PESANAN: TAMBAH MANUAL & UPDATE STATUS ---
     public function simpanPesanan(Request $request) 
@@ -280,52 +314,64 @@ class AdminController extends Controller
     }
 
     // --- CRUD TRANSAKSI KEUANGAN ---
+    // --- CRUD TRANSAKSI KEUANGAN (FIXED) ---
     public function simpanTransaksi(Request $request) 
     { 
+        // Validasi disesuaikan dengan kolom database 'kategori'
         $request->validate([
-            'deskripsi' => 'required|string|max:255',
-            'nominal' => 'required|numeric|min:1',
-            'tipe' => 'required|in:pemasukan,pengeluaran',
-            'status' => 'required|in:lunas,belum_lunas',
-            'tanggal' => 'required|date',
+            'kategori' => 'required|string|max:255', // Ganti 'deskripsi' jadi 'kategori'
+            'nominal'   => 'required|numeric|min:1',
+            'tipe'      => 'required|in:pemasukan,pengeluaran',
+            'status'    => 'required|in:lunas,pending', // Sesuaikan enum di migration
+            'tanggal'   => 'required|date',
         ]);
         
         try {
             Transaksi::create([
-                'deskripsi' => $request->deskripsi,
-                'nominal' => $request->nominal,
-                'tipe' => $request->tipe,
-                'status' => $request->status,
-                'tanggal' => $request->tanggal,
-                'user_id' => Auth::id(),
+                'kategori' => $request->kategori, // Input dari form name="kategori"
+                'nominal'   => $request->nominal,
+                'tipe'      => $request->tipe,
+                'status'    => $request->status,
+                'tanggal'   => $request->tanggal,
+                // Hapus user_id karena tidak ada di migration
             ]);
+            
             return redirect()->route('admin.keuangan')->with('success', 'Transaksi berhasil ditambahkan!');
         } catch (\Exception $e) {
             Log::error('Gagal Simpan Transaksi: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Gagal menyimpan transaksi.');
+            return redirect()->back()->with('error', 'Gagal menyimpan transaksi: ' . $e->getMessage());
         }
     }
 
     public function updateTransaksi(Request $request, $id) 
     { 
         $request->validate([
-            'deskripsi' => 'required|string|max:255',
-            'nominal' => 'required|numeric|min:1',
-            'tipe' => 'required|in:pemasukan,pengeluaran',
-            'status' => 'required|in:lunas,belum_lunas',
-            'tanggal' => 'required|date',
+            'kategori' => 'required|string|max:255',
+            'nominal'   => 'required|numeric|min:1',
+            'tipe'      => 'required|in:pemasukan,pengeluaran',
+            'status'    => 'required|in:lunas,pending',
+            'tanggal'   => 'required|date',
         ]);
 
         try {
+            // Karena primary key custom, findOrFail tetap aman
             $transaksi = Transaksi::findOrFail($id);
-            $transaksi->update($request->all());
+            
+            $transaksi->update([
+                'kategori' => $request->kategori,
+                'nominal'   => $request->nominal,
+                'tipe'      => $request->tipe,
+                'status'    => $request->status,
+                'tanggal'   => $request->tanggal,
+            ]);
+
             return redirect()->route('admin.keuangan')->with('success', 'Transaksi berhasil diperbarui!');
         } catch (\Exception $e) {
             Log::error('Gagal Update Transaksi: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Gagal memperbarui transaksi.');
         }
     }
-
+    
     public function hapusTransaksi($id) 
     { 
         try {
@@ -337,37 +383,55 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'Gagal menghapus transaksi.');
         }
     }
-
     // --- CRUD ULASAN ---
+    // --- CRUD ULASAN (DIPERBAIKI) ---
     public function simpanUlasan(Request $request) 
     { 
+        // 1. VALIDASI: Hapus user_id & pesanan_id karena tidak ada di database
         $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'pesanan_id' => 'required|exists:pesanans,id|unique:ulasans,pesanan_id',
-            'rating' => 'required|integer|min:1|max:5',
-            'komentar' => 'nullable|string',
+            'nama_pengulas' => 'required|string|max:255',
+            'jenis_pesanan' => 'nullable|string|max:255',
+            'rating'       => 'required|integer|min:1|max:5',
+            'komentar'     => 'nullable|string',
         ]);
 
         try {
-            Ulasan::create($request->all());
+            // 2. SIMPAN: Hanya kolom yang ada di migration Anda
+            Ulasan::create([
+                'nama_pengulas' => $request->nama_pengulas,
+                'jenis_pesanan' => $request->jenis_pesanan,
+                'rating'        => $request->rating,
+                'komentar'      => $request->komentar,
+            ]);
+
             return redirect()->route('admin.ulasan')->with('success', 'Ulasan berhasil ditambahkan!');
         } catch (\Exception $e) {
             Log::error('Gagal Simpan Ulasan: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Gagal menyimpan ulasan.');
+            return redirect()->back()->with('error', 'Gagal menyimpan ulasan: ' . $e->getMessage());
         }
     }
     
-    // Asumsi update tidak diperlukan untuk Ulasan, hanya hapus, tapi tetap disediakan.
     public function updateUlasan(Request $request, $id) 
     { 
+        // Update validasi untuk mencakup nama dan jenis pesanan juga
         $request->validate([
+            'nama_pengulas' => 'required|string|max:255',
+            'jenis_pesanan' => 'nullable|string|max:255',
             'rating' => 'required|integer|min:1|max:5',
             'komentar' => 'nullable|string',
         ]);
 
         try {
             $ulasan = Ulasan::findOrFail($id);
-            $ulasan->update($request->only(['rating', 'komentar']));
+            
+            // Update semua field yang bisa diedit admin
+            $ulasan->update([
+                'nama_pengulas' => $request->nama_pengulas,
+                'jenis_pesanan' => $request->jenis_pesanan,
+                'rating' => $request->rating,
+                'komentar' => $request->komentar,
+            ]);
+
             return redirect()->route('admin.ulasan')->with('success', 'Ulasan berhasil diperbarui!');
         } catch (\Exception $e) {
             Log::error('Gagal Update Ulasan: ' . $e->getMessage());

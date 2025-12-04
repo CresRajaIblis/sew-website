@@ -5,15 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zulaeha Tailor - Baju Formal & Non-Formal Premium</title>
     
-    <!-- PENTING: Token Keamanan Laravel -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- Font Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         /* =========================================
-           CSS ASLI (TIDAK BERUBAH)
+           CSS ASLI HOME
            ========================================= */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; color: #2c2c2c; overflow-x: hidden; line-height: 1.6; }
@@ -122,17 +120,33 @@
         .collection-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem; margin: 4rem 0; max-width: 1400px; margin: 0 auto; }
         .product-card { background: white; border-radius: 20px; overflow: hidden; transition: all 0.3s; cursor: pointer; position: relative; }
         .product-card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
-        .product-image { height: 350px; position: relative; overflow: hidden; background-color: #eee; }
+        
+        /* Tambahan style Image Product agar sama dengan catalogue */
+        .product-image { 
+            height: 350px; 
+            position: relative; 
+            overflow: hidden; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 6rem; 
+        }
+        .product-image img { width: 100%; height: 100%; object-fit: cover; }
+
         .formal-bg { background: linear-gradient(135deg, #E3F2FD 0%, #90CAF9 100%); }
         .premium-bg { background: linear-gradient(135deg, #FFF3E0 0%, #FFB74D 100%); }
         .casual-bg { background: linear-gradient(135deg, #F3E5F5 0%, #CE93D8 100%); }
         .dress-bg { background: linear-gradient(135deg, #FCE4EC 0%, #F48FB1 100%); }
         .batik-bg { background: linear-gradient(135deg, #E8F5E9 0%, #81C784 100%); }
         .suit-bg { background: linear-gradient(135deg, #EFEBE9 0%, #A1887F 100%); }
-        .product-badge { position: absolute; top: 15px; left: 15px; background: #8B4545; color: white; padding: 0.5rem 1rem; border-radius: 25px; font-size: 0.8rem; font-weight: 600; z-index: 2; }
-        .product-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; opacity: 0; transition: all 0.3s; }
-        .product-card:hover .product-overlay { opacity: 1; }
-        .btn-quick-view, .btn-add-cart { background: white; color: #8B4545; border: none; padding: 0.8rem 1.5rem; border-radius: 25px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+        
+        .product-badge { position: absolute; top: 15px; left: 15px; background: #8B4545; color: white; padding: 0.5rem 1rem; border-radius: 25px; font-size: 0.8rem; font-weight: 600; }
+        .product-badge.hot { background: #FF6B6B; }
+        .product-badge.new { background: #4CAF50; }
+
+        .product-overlay { position: auto; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; opacity: 0; transition: all 0.3s; }
+        .product-card:hover .product-overlay { opacity: 0; }
+        .btn-quick-view, .btn-add-cart { background: white; color: #8B4545; border: none; padding: 0.8rem 1.5rem; border-radius: 25px; cursor: pointer; font-weight: 600; transition: all 0.9s; }
         .btn-add-cart { background: #F59B9A; color: white; }
         .btn-quick-view:hover, .btn-add-cart:hover { transform: scale(1.05); }
         .product-info { padding: 1.5rem; }
@@ -216,13 +230,6 @@
         .contact-form input:focus, .contact-form textarea:focus { outline: none; border-color: #F59B9A; box-shadow: 0 0 0 3px rgba(245, 155, 154, 0.1); }
         .contact-form textarea { resize: vertical; }
 
-        /* Cart Modal */
-        .modal { display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
-        .modal.active { display: flex; } /* Tambahkan ini agar modal bisa aktif */
-        .modal-content { background-color: white; padding: 2rem; border-radius: 15px; width: 90%; max-width: 500px; position: relative; max-height: 80vh; overflow-y: auto; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-        .close-modal { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #666; }
-
         /* Footer */
         footer { background-color: #15202b; color: #ccc; padding: 40px 20px; font-family: 'Poppins', sans-serif; font-size: 16px; }
         .footer-container { display: flex; justify-content: space-between; max-width: 1100px; margin: 0 auto 30px auto; flex-wrap: wrap; }
@@ -239,11 +246,120 @@
             .nav-menu { display: none; }
             .hero { flex-direction: column; text-align: center; }
             .hero h1 { font-size: 2.5rem; }
+            .form-row { grid-template-columns: 1fr; }
+            .modal-content { width: 95%; padding: 1rem; }
+            .cart-item { flex-direction: column; }
         }
+
+        /* =========================================
+           CSS TAMBAHAN DARI CATALOGUE (INTEGRASI)
+           ========================================= */
+        /* Cart Modal yang Diperbarui */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; border-radius: 20px; padding: 2rem; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #E0E0E0; }
+        .modal-header h2 { color: #8B4545; font-size: 2rem; }
+        .close-modal { background: none; border: none; font-size: 2rem; cursor: pointer; color: #666; transition: all 0.3s; }
+        .close-modal:hover { color: #8B4545; }
+        .cart-empty { text-align: center; padding: 3rem; color: #666; }
+        .cart-items { margin-bottom: 2rem; }
+        .cart-item { display: flex; gap: 1.5rem; padding: 1.5rem; border: 2px solid #E0E0E0; border-radius: 15px; margin-bottom: 1rem; transition: all 0.3s; }
+        .cart-item:hover { border-color: #F59B9A; }
+        .cart-item-image { width: 100px; height: 100px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 3rem; overflow: hidden; }
+        .cart-item-image img { width: 100%; height: 100%; object-fit: cover; }
+        .cart-item-details { flex: 1; }
+        .cart-item-details h3 { color: #2c2c2c; margin-bottom: 0.5rem; }
+        .cart-item-details p { color: #666; font-size: 0.9rem; margin: 0.3rem 0; }
+        .cart-item-price { color: #8B4545; font-weight: 700; font-size: 1.3rem; }
+        .cart-item-actions { display: flex; align-items: center; gap: 1rem; margin-top: 1rem; }
+        .quantity-control { display: flex; align-items: center; gap: 0.5rem; }
+        .quantity-btn { background: #F59B9A; color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-weight: 700; transition: all 0.3s; }
+        .quantity-btn:hover { background: #8B4545; }
+        .quantity-display { font-weight: 600; min-width: 30px; text-align: center; }
+        .remove-item { background: #FF6B6B; color: white; border: none; padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+        .remove-item:hover { background: #FF5252; }
+        .cart-summary { background: #FFF5F5; padding: 1.5rem; border-radius: 15px; margin-top: 2rem; }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 1.1rem; }
+        .summary-row.total { font-size: 1.5rem; font-weight: 700; color: #8B4545; padding-top: 1rem; border-top: 2px solid #F59B9A; }
+        .checkout-btn { background: linear-gradient(135deg, #8B4545 0%, #F59B9A 100%); color: white; border: none; padding: 1.2rem; border-radius: 30px; cursor: pointer; font-weight: 700; font-size: 1.1rem; width: 100%; margin-top: 1.5rem; transition: all 0.3s; }
+        .checkout-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(139, 69, 69, 0.4); }
+        
+        .payment-methods { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .payment-option { padding: 1rem; border: 2px solid #E0E0E0; border-radius: 10px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .payment-option:hover, .payment-option.selected { border-color: #F59B9A; background: #FFF5F5; }
+        .checkout-form { margin-top: 2rem; }
+        .form-section { margin-bottom: 2rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group input, .form-group textarea { width: 100%; padding: 1rem; border: 2px solid #E0E0E0; border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 1rem; transition: all 0.3s; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #F59B9A; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+        /* Order Success & Print */
+        .order-success { text-align: center; padding: 3rem; }
+        .order-success h2 { color: #4CAF50; font-size: 2.5rem; margin-bottom: 1rem; }
+        .order-number { background: #FFF5F5; padding: 1rem; border-radius: 10px; font-weight: 700; color: #8B4545; font-size: 1.3rem; margin: 1rem 0; }
+        .queue-number { background: linear-gradient(135deg, #F59B9A 0%, #8B4545 100%); padding: 2rem; border-radius: 15px; margin: 2rem 0; color: white; }
+        .queue-display { font-size: 4rem; font-weight: 800; margin: 1rem 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+        .queue-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0; }
+        .queue-info-box { background: #FFF5F5; padding: 1.5rem; border-radius: 10px; border-left: 4px solid #8B4545; }
+        .order-summary-box { background: white; border: 2px solid #F59B9A; padding: 1.5rem; border-radius: 15px; margin: 2rem 0; text-align: left; }
+        .order-item { padding: 0.8rem 0; border-bottom: 1px solid #E0E0E0; }
+        .order-item:last-child { border-bottom: none; }
+        .print-btn { background: white; color: #8B4545; border: 2px solid #8B4545; padding: 1rem 2rem; border-radius: 30px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: all 0.3s; margin-top: 1rem; }
+        .print-btn:hover { background: #8B4545; color: white; }
+
+        /* =========================================
+           CSS TAMBAHAN UNTUK CHECKOUT FLOW (BARU)
+           ========================================= */
+        .payment-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 1rem; margin-top: 10px; }
+        .payment-card { border: 2px solid #eee; border-radius: 12px; padding: 1.5rem 0.5rem; text-align: center; cursor: pointer; transition: all 0.3s; background: #fff; }
+        .payment-card:hover { border-color: #F59B9A; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .payment-card .pay-icon { font-size: 2rem; display: block; margin-bottom: 0.5rem; }
+        .payment-card .pay-name { font-size: 0.9rem; font-weight: 600; color: #555; }
+        
+        .payment-detail-card { background: #f9f9f9; border-top: 4px solid #8B4545; border-radius: 0 0 10px 10px; padding: 1.5rem; text-align: center; margin-bottom: 1.5rem; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .bank-logo { font-size: 3rem; margin-bottom: 10px; display: block; }
+        .bank-number { font-size: 1.8rem; font-weight: 800; color: #2c2c2c; letter-spacing: 2px; margin: 10px 0; font-family: monospace; }
+        .bank-name { color: #666; margin: 5px 0; }
+        .copy-btn { background: #eee; border: none; padding: 5px 15px; border-radius: 15px; font-size: 0.8rem; cursor: pointer; color: #555; transition: 0.3s; }
+        .copy-btn:hover { background: #ddd; }
+        
+        .total-pay-box { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #FFF5F5; border-radius: 10px; margin-bottom: 1.5rem; border: 1px dashed #F59B9A; }
+        
+        .btn-next { background: #8B4545; color: white; width: 100%; padding: 1rem; border: none; border-radius: 30px; margin-top: 1rem; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-next:hover { background: #723636; }
+        
+        .btn-back-link { cursor: pointer; color: #666; margin-bottom: 15px; display: inline-block; font-weight: 500; }
+        .btn-back-link:hover { color: #8B4545; text-decoration: underline; }
+
+        /* Style Tombol WhatsApp */
+        .btn-wa-confirm { 
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); 
+            color: white; 
+            width: 100%; 
+            border: none; 
+            padding: 1rem; 
+            border-radius: 30px; 
+            font-weight: 700; 
+            font-size: 1.1rem; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 10px; 
+            margin-top: 15px; 
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+        }
+        .btn-wa-confirm:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5); 
+        }
+
     </style>
 </head>
 <body onbeforeunload="saveCartState()">
-    <!-- Header -->
     <header>
         <nav class="navbar">
             <a href="{{ url('/') }}" class="logo">
@@ -257,13 +373,11 @@
                 <li><a href="{{ route('catalogue') }}">Catalogue</a></li>
             </ul>
             
-            <!-- NAV ACTIONS DARI CATALOGUE -->
             <div class="nav-actions">
                 <button class="btn-cart" onclick="openCart()">
                     🛍️ <span class="cart-count" id="cartCount">0</span>
                 </button>
                 @auth
-                    <!-- Tombol Logout dan Dashboard dipisahkan -->
                     <a href="{{ route('dashboard_redirect') }}" class="cta-button" style="background: linear-gradient(135deg, #F59B9A 0%, #8B4545 100%);">Dashboard</a>
                     <form action="{{ route('logout') }}" method="POST" id="logoutForm" style="display:inline;">
                         @csrf
@@ -276,7 +390,6 @@
         </nav>
     </header>
 
-    <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="hero-content">
             <div class="badge">✨ Koleksi Terbaru 2025</div>
@@ -306,24 +419,24 @@
                <div class="product-preview" style="position: relative;">
                 <img src="{{ asset('assets/image/foto1.jpg') }}" alt="Kemeja Premium" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 10px; z-index: 1;">
                 <div class="product-tag" style="position: absolute; top: 10px; right: 10px; z-index: 2;">New</div>
-                <h4 style="position: absolute; bottom: 50px; left: 15px; z-index: 2; color: white; font-size: 1.1rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Kemeja Premium</h4>
-                <p class="product-price" style="position: absolute; bottom: 15px; left: 15px; z-index: 2; color: #fff; font-size: 1.3rem; font-weight: 700; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Rp 450.000</p>
+                <h4 style="position: absolute; bottom: 60px; left: 15px; z-index: 2; color: white; font-size: 1.1rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Kemeja Premium</h4>
+                <p class="product-price" style="position: absolute; bottom: -10px; left: 15px; z-index: 2; color: #fff; font-size: 1.3rem; font-weight: 700; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Rp 450.000</p>
                 </div>
             </div>
             <div class="image-card card-2">
                 <div class="product-preview" style="position: relative;">
                     <div class="product-tag hot" style="position: absolute; top: 10px; right: 10px; z-index: 2;">Hot</div>
                 <img src="{{ asset('assets/image/foto2.jpg') }}" alt="Blazer Elegant" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 10px; z-index: 1;">
-                <h4 style="position: absolute; bottom: 50px; left: 15px; z-index: 2; color: white; font-size: 1.1rem; margin-bottom: 10px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Blazer Elegant</h4>
-                <p class="product-price" style="position: absolute; bottom: 15px; left: 15px; z-index: 2; color: #fff; font-size: 1.3rem; font-weight: 700; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Rp 850.000</p>
+                <h4 style="position: absolute; bottom: 60px; left: 15px; z-index: 2; color: white; font-size: 1.1rem; margin-bottom: 10px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Blazer Elegant</h4>
+                <p class="product-price" style="position: absolute; bottom: -10px; left: 15px; z-index: 2; color: #fff; font-size: 1.3rem; font-weight: 700; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Rp 850.000</p>
             </div>
             </div>
             <div class="image-card card-3">
                 <div class="product-preview" style="position: relative;">
                 <div class="product-tag" style="position: absolute; top: 10px; right: 10px; z-index: 2;">Sale</div>
                 <img src="{{ asset('assets/image/foto3.jpg') }}" alt="Dress Casual" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 10px; z-index: 1;">
-                <h4 style="position: absolute; bottom: 50px; left: 15px; z-index: 2; color: white; font-size: 1.1rem; margin-bottom: 10px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Dress Casual</h4>
-                <p class="product-price" style="position: absolute; bottom: 15px; left: 15px; z-index: 2; color: #fff; font-size: 1.3rem; font-weight: 700; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Rp 380.000</p>
+                <h4 style="position: absolute; bottom: 60px; left: 15px; z-index: 2; color: white; font-size: 1.1rem; margin-bottom: 10px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Dress Casual</h4>
+                <p class="product-price" style="position: absolute; bottom: -10px; left: 15px; z-index: 2; color: #fff; font-size: 1.3rem; font-weight: 700; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Rp 380.000</p>
             </div>
             </div>
         </div>
@@ -334,7 +447,6 @@
         </div>
     </section>
 
-    <!-- Features Section -->
     <section class="features">
         <div class="feature-card">
             <div class="feature-icon">✂️</div>
@@ -358,7 +470,6 @@
         </div>
     </section>
 
-    <!-- About Section -->
     <section class="about" id="about">
         <div class="about-image">
             <div class="about-img-wrapper">
@@ -400,7 +511,6 @@
         </div>
     </section>
 
-    <!-- Collection Section -->
     <section class="collection" id="collection-section">
         <div class="collection-header">
             <h2>Koleksi Terbaru Kami</h2>
@@ -422,112 +532,6 @@
         </center>
     </section>
 
-    <!-- Special Promo Section -->
-    <section class="special-promo">
-        <div class="promo-content">
-            <span class="promo-label">🔥 Penawaran Spesial Hari Ini</span>
-            <h2>Koleksi Eksklusif<br><span class="highlight">Premium Suit</span><br>Edisi Terbatas</h2>
-            <p>Dapatkan suit premium kami dengan desain eksklusif dan bahan berkualitas tinggi. Cocok untuk wedding, meeting penting, atau acara formal lainnya. Limited stock - hanya tersedia 50 set!</p>
-            <div class="promo-features">
-                <div class="promo-feature">✓ Bahan Wool Premium Import</div>
-                <div class="promo-feature">✓ Custom Fit Guarantee</div>
-                <div class="promo-feature">✓ Free Alterations (3x)</div>
-                <div class="promo-feature">✓ Complimentary Tie & Pocket Square</div>
-            </div>
-            <div class="promo-price">
-                <span class="big-price">Rp 1.850.000</span>
-                <span class="original-price">Rp 2.500.000</span>
-                <span class="discount-badge">Hemat 26%</span>
-            </div>
-            <a href="{{ route('user.register') }}" class="btn-primary-large">Pesan Sekarang - Stock Terbatas!</a>
-            <div class="urgency-text">⏰ Penawaran berakhir dalam: <strong>23:45:12</strong></div>
-        </div>
-        <div class="promo-image">
-            <div class="suit-showcase">
-                <div class="suit-item item-1">
-                    <img src="{{ asset('assets/image/promo1.jpg') }}" alt="Premium Jacket" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;">
-                </div>
-                <div class="suit-item item-2">
-                    <img src="{{ asset('assets/image/promo2.jpg') }}" alt="Premium Jacket" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;">
-                </div>
-                <div class="suit-item item-3">
-                    <img src="{{ asset('assets/image/promo3.jpg') }}" alt="Vest & Accessories" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;">
-                </div>
-            </div>
-            <div class="floating-discount">
-                <div class="discount-circle">
-                    <span class="discount-text">26%<br>OFF</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonial Section -->
-    <section class="testimonial">
-        <div class="testimonial-header">
-            <h2>Apa Kata Pelanggan Kami</h2>
-            <p>Kepuasan pelanggan adalah prioritas utama kami</p>
-        </div>
-        <div class="testimonial-grid">
-            <div class="testimonial-card">
-                <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
-                <p>"Kualitas jahitan sangat rapi dan bahannya premium! Saya sudah pesan 5 kemeja di sini dan semua hasilnya memuaskan. Highly recommended!"</p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">AR</div>
-                    <div class="author-info">
-                        <h4>Ahmad Rizki</h4>
-                        <span>Manager Marketing</span>
-                    </div>
-                </div>
-            </div>
-            <div class="testimonial-card">
-                <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
-                <p>"Blazer yang saya beli untuk wedding teman sangat sempurna! Potongannya pas di badan dan bahannya nyaman. Terima kasih Zulaeha Tailor!"</p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">DS</div>
-                    <div class="author-info">
-                        <h4>Dinda Sari</h4>
-                        <span>Entrepreneur</span>
-                    </div>
-                </div>
-            </div>
-            <div class="testimonial-card">
-                <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
-                <p>"Pelayanannya ramah, proses cepat, dan hasil jahitan sangat memuaskan. Harga juga masih reasonable untuk kualitas yang didapat. Pasti langganan di sini!"</p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">BP</div>
-                    <div class="author-info">
-                        <h4>Budi Prasetyo</h4>
-                        <span>Software Engineer</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Member Section -->
-    <section class="member">
-        <div class="member-content">
-            <h2>Bergabung dengan Member Eksklusif<br>Dapatkan Diskon hingga <span class="highlight-white">35%</span></h2>
-            <p>Nikmati berbagai keuntungan eksklusif sebagai member Zulaeha Tailor</p>
-            <div class="member-benefits">
-                <div class="benefit">✓ Diskon hingga 35% untuk semua produk</div>
-                <div class="benefit">✓ Early access untuk koleksi terbaru</div>
-                <div class="benefit">✓ Free alterations selamanya</div>
-                <div class="benefit">✓ Birthday special gift</div>
-                <div class="benefit">✓ Priority customer service</div>
-            </div>
-            <div class="member-form">
-                <input type="text" placeholder="Nama Lengkap">
-                <input type="email" placeholder="Email Address">
-                <input type="tel" placeholder="Nomor WhatsApp">
-                <a href="{{ route('user.register') }}" class="btn-join">Daftar Sekarang - GRATIS!</a>
-            </div>
-            <p class="member-note">*Keanggotaan gratis selamanya. Tidak ada biaya tersembunyi.</p>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
     <section class="contact" id="contact-section">
         <div class="contact-info">
             <h2>Hubungi Kami</h2>
@@ -554,41 +558,30 @@
                         <p>zulstailor@gmail.com</p>
                     </div>
                 </div>
-                <div class="contact-item">
-                    <span class="contact-icon">⏰</span>
-                    <div>
-                        <h4>Jam Operasional</h4>
-                        <p>Senin - Jumat: 08.00 - 20.00<br>Sabtu - Minggu: 12.00 - 18.00</p>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="contact-form-section">
-            <h3>Kirim Pesan</h3>
-            <form class="contact-form">
-                <input type="text" placeholder="Nama Anda" required>
-                <input type="email" placeholder="Email" required>
-                <input type="tel" placeholder="Nomor WhatsApp" required>
-                <textarea placeholder="Pesan Anda..." rows="5" required></textarea>
-                <button type="submit" class="btn-primary">Kirim Pesan</button>
-            </form>
-        </div>
+    <h3>Kirim Pesan</h3>
+    <form class="contact-form" onsubmit="return false;"> 
+        <input type="text" id="contactName" placeholder="Nama Anda" required>
+        <input type="email" id="contactEmail" placeholder="Email" required>
+        <input type="tel" id="contactPhone" placeholder="Nomor WhatsApp" required>
+        <textarea id="contactMessage" placeholder="Pesan Anda..." rows="5" required></textarea>
+        <button type="button" class="btn-primary" onclick="sendContactWA()">Kirim Pesan</button>
+    </form>
+</div>
     </section>
 
-    <!-- Cart Modal -->
     <div class="modal" id="cartModal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Keranjang Belanja</h2>
                 <button class="close-modal" onclick="closeCart()">×</button>
             </div>
-            <div id="cartContent">
-                <!-- Isi cart akan dirender di sini oleh JavaScript -->
-            </div>
+            <div id="cartContent"></div>
         </div>
     </div>
 
-    <!-- FOOTER -->
     <footer>
     <div class="footer-container">
         <div class="footer-section">
@@ -599,11 +592,8 @@
             <h3>Link Cepat</h3>
             <ul>
                 <li><a href="#home">Home</a></li> 
-                
                 <li><a href="#collection-section">Kategori</a></li> 
-                
                 <li><a href="#collection-section">Koleksi</a></li> 
-                
                 <li><a href="#contact-section">Kontak</a></li> 
             </ul>
         </div>
@@ -613,245 +603,411 @@
             <p>✉️ zulstailor@gmail.com</p>
             <p>📍 Jl. Prof. Dr. Soepomo. Lrg. Rizka No. 561, Palembang</p>
         </div>
-        <div class="footer-section">
-            <h3>Jam Operasional</h3>
-            <p>Senin - Jumat: 08.00 - 20.00</p>
-            <p>Sabtu - Minggu: 12.00 - 18.00</p>
-        </div>
     </div>
     <p class="footer-bottom">© 2025 Zulaeha Tailor. All Rights Reserved.</p>
     </footer>
 
-    <!-- LOGIKA JAVASCRIPT UTAMA (DIPERBARUI DENGAN LOGIKA CART DARI CATALOGUE) -->
-    <script>
-        // 1. DATA DARI CONTROLLER (DINAMIS)
-        // Catatan: Karena ini halaman Home, saya hanya menggunakan produk dummy. 
-        // Anda harus memastikan variabel $products tersedia di controller yang me-load view ini.
-        const products = [
-            { id: 1, name: 'Dress Formal Elegant', price: 450000, oldPrice: 550000, category: 'formal', gender: 'wanita', rating: 4.8, reviews: 45, desc: 'Dress formal dengan detail elegan', badge: 'hot', image: '{{ asset("assets/image/foto1.jpg") }}', bg: 'dress-bg' },
-            { id: 2, name: 'Kebaya Modern Premium', price: 750000, oldPrice: 900000, category: 'formal', gender: 'wanita', rating: 4.9, reviews: 62, desc: 'Kebaya modern dengan bordir mewah', badge: 'new', image: '{{ asset("assets/image/foto2.jpg") }}', bg: 'kebaya-bg' },
-            { id: 3, name: 'Tunik Formal Cantik', price: 380000, oldPrice: null, category: 'formal', gender: 'wanita', rating: 4.7, reviews: 38, desc: 'Tunik formal untuk acara resmi', badge: null, image: '{{ asset("assets/image/foto3.jpg") }}', bg: 'tunic-bg' },
-            { id: 4, name: 'Jas Formal Executive', price: 850000, oldPrice: 1000000, category: 'formal', gender: 'pria', rating: 4.9, reviews: 67, desc: 'Jas formal untuk acara bisnis', badge: 'hot', image: '{{ asset("assets/image/promo1.jpg") }}', bg: 'suit-bg' },
-            { id: 5, name: 'Kemeja Formal Premium', price: 380000, oldPrice: null, category: 'formal', gender: 'pria', rating: 4.7, reviews: 92, desc: 'Kemeja formal kualitas premium', badge: null, image: '{{ asset("assets/image/promo2.jpg") }}', bg: 'formal-bg' },
-            { id: 6, name: 'Kemeja Batik Premium', price: 420000, oldPrice: null, category: 'batik', gender: 'pria', rating: 4.8, reviews: 85, desc: 'Kemeja batik motif eksklusif', badge: 'new', image: '{{ asset("assets/image/promo3.jpg") }}', bg: 'batik-bg' },
-        ];
+<script>
+    // 1. INTEGRASI DATA & VARIABEL
+    const products = @json($products);
+    const ADMIN_WA_NUMBER = '6281373677824'; // Nomor WA Admin Zulaeha Tailor
+
+    let cart = [];
+    const csrfToken = '{{ csrf_token() }}';
+    const placeOrderUrl = '{{ route('checkout.process') }}';
+    
+    // Auth Data
+    const isUserAuthenticated = {{ Auth::check() && Auth::user()->role === 'user' ? 'true' : 'false' }};
+    const userName = '{{ Auth::user()->name ?? '' }}';
+    const userEmail = '{{ Auth::user()->email ?? '' }}';
+    const userPhone = '{{ Auth::user()->phone ?? '' }}';
+
+    window.tempOrderData = {};
+
+    // 2. INITIALIZATION
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedCart = localStorage.getItem('zulaehaCart');
+        if (savedCart) { try { cart = JSON.parse(savedCart); } catch (e) { cart = []; } }
         
-        // Logika Cart dari catalogue.blade.php
-        let cart = JSON.parse(localStorage.getItem('zulaehaCart')) || [];
+        renderProducts('all');
+        updateCartCount();
 
-        function saveCartState() {
-            localStorage.setItem('zulaehaCart', JSON.stringify(cart));
+        // Filter Tabs Logic
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                renderProducts(tab.getAttribute('data-category'));
+            });
+        });
+    });
+    
+    function saveCartState() { localStorage.setItem('zulaehaCart', JSON.stringify(cart)); }
+
+    function renderProductImage(icon) {
+        if (icon && icon.match(/\.(jpeg|jpg|gif|png)|(https?:\/\/)/)) {
+            return `<img src="${icon}" alt="product" style="width: 100%; height: 100%; object-fit: cover;">`;
+        }
+        return `<span style="font-size: 3rem;">${icon || '👕'}</span>`;
+    }
+
+    // 3. RENDER PRODUCTS (HOME)
+    function renderProducts(filterCategory = 'all') {
+        const container = document.getElementById('productContainer');
+        container.innerHTML = ''; 
+
+        const filtered = products.filter(p => {
+            if (filterCategory === 'all') return true;
+            if (filterCategory === 'new') return p.badge === 'new';
+            return p.category === filterCategory;
+        });
+
+        if (filtered.length === 0) {
+            container.innerHTML = '<p style="text-align:center; width:100%; color:white;">Produk tidak ditemukan.</p>';
+            return;
         }
 
-        // Fungsi yang dipanggil saat tombol cart diklik
-        function openCart() {
-            renderCartModal(); 
-            document.getElementById('cartModal').classList.add('active');
-        }
-        
-        function closeCart() {
-            document.getElementById('cartModal').classList.remove('active');
-        }
+        filtered.slice(0, 8).forEach(p => { 
+            let badgeHTML = p.badge ? `<div class="product-badge ${p.badge}">${p.badge === 'hot' ? '🔥 HOT' : '✨ NEW'}</div>` : '';
+            const displayImg = p.image ? `<img src="${p.image}" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;">` : renderProductImage(p.icon);
 
-        function updateHomeCartCount() {
-            const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
-            const countElement = document.getElementById('cartCount');
-            if(countElement) {
-                countElement.innerText = totalItems;
-            }
-        }
-        
-        // FUNGSI INI HANYA UNTUK DEMO DI HOME. User akan diarahkan ke Catalogue untuk memilih detail size/color.
-        function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            if (!product) return;
-            
-            // Di halaman Home, kita tambahkan dengan default (M, Hitam)
-            const defaultSize = 'M';
-            const defaultColor = 'Hitam';
-            
-            const existingItem = cart.find(item => 
-                item.id === productId && item.size === defaultSize && item.color === defaultColor
-            );
-
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({
-                    id: product.id,
-                    name: product.name,
-                    price: product.price,
-                    image: product.image,
-                    color: defaultColor, 
-                    size: defaultSize, 
-                    quantity: 1
-                });
-            }
-
-            saveCartState(); 
-            updateHomeCartCount();
-            
-            // Mengganti alert()
-            console.log(`✅ ${product.name} berhasil ditambahkan ke keranjang!`);
-            // Opsional: Buka keranjang setelah menambahkan
-            // openCart(); 
-        }
-
-        // 4. FUNGSI RENDER ISI MODAL KERANJANG (DARI CATALOGUE)
-        function renderCartModal() {
-            const cartContent = document.getElementById('cartContent');
-            if(cart.length === 0) {
-                 cartContent.innerHTML = '<div class="cart-empty"><p>Keranjang Anda masih kosong. Ayo jelajahi koleksi kami!</p></div>';
-                 return;
-            }
-            
-            let html = '<div class="cart-items">';
-            let subtotal = 0;
-            
-            cart.forEach(item => {
-                subtotal += item.price * item.quantity;
-                
-                // Pastikan item memiliki properti yang dibutuhkan, gunakan fallback jika tidak ada
-                const itemName = item.name || 'Produk Tanpa Nama';
-                const itemPrice = item.price || 0;
-                const itemQuantity = item.quantity || 1;
-                const itemImage = item.image || 'https://placehold.co/50x50/cccccc/333333?text=?';
-
-                html += `
-                    <div class="cart-item" style="display: flex; gap: 15px; padding: 15px 0; border-bottom: 1px dashed #eee;">
-                        <img src="${itemImage}" alt="${itemName}" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
-                        <div style="flex: 1;">
-                            <h4 style="margin: 0; font-size: 1.1rem; color: #2c2c2c;">${itemName}</h4>
-                            <p style="margin: 3px 0; font-size: 0.85rem; color: #666;">Ukuran: ${item.size || 'N/A'}, Warna: ${item.color || 'N/A'}</p>
-                            <p style="margin: 0; font-size: 0.95rem; font-weight: 600; color: #8B4545;">${itemQuantity} x Rp ${itemPrice.toLocaleString('id-ID')}</p>
+            container.innerHTML += `
+                <div class="product-card">
+                    <div class="product-image ${p.bg || 'formal-bg'}">
+                        ${displayImg} ${badgeHTML}
+                        <div class="product-overlay">
+                            <a href="{{ route('catalogue') }}" class="btn-quick-view">Lihat Detail</a>
+                            <button class="btn-add-cart" onclick="addToCart(${p.id})">Tambah ke Keranjang</button>
                         </div>
                     </div>
-                `;
+                    <div class="product-info">
+                        <div class="product-rating">⭐⭐⭐⭐⭐ <span>(${p.reviews || 0})</span></div>
+                        <h3>${p.name}</h3>
+                        <p class="product-desc">${p.desc || ''}</p>
+                        <div class="product-footer"><p class="price">Rp ${p.price.toLocaleString('id-ID')}</p></div>
+                    </div>
+                </div>`;
+        });
+    }
+
+    // 4. ADD TO CART
+    function addToCart(pid) {
+        const p = products.find(i => i.id === pid);
+        if (!p) return;
+
+        const exist = cart.find(i => i.id === pid && i.size === "All Size");
+        if (exist) {
+            exist.quantity++;
+        } else {
+            cart.push({
+                id: p.id, name: p.name, price: p.price,
+                icon: p.icon || p.image || '📦', bg: p.bg || 'formal-bg',
+                size: "All Size", color: "Standard", colorDisplay: "Standard",
+                quantity: 1
             });
+        }
+        saveCartState(); updateCartCount();
+        alert(`✅ ${p.name} berhasil masuk keranjang!`);
+    }
 
-            html += '</div>';
+    function updateCartCount() {
+        document.getElementById('cartCount').textContent = cart.reduce((a, b) => a + b.quantity, 0);
+    }
 
-            const tax = subtotal * 0.1;
-            const total = subtotal + tax;
+    // ============================================================
+    // 5. CHECKOUT FLOW DENGAN WHATSAPP
+    // ============================================================
 
-            html += `
-                <div class="cart-summary" style="margin-top: 20px; padding-top: 15px; border-top: 2px solid #E0E0E0;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                        <span>Subtotal:</span>
-                        <span>Rp ${subtotal.toLocaleString('id-ID')}</span>
+    function openCart() { document.getElementById('cartModal').classList.add('active'); renderCartView(); }
+    function closeCart() { document.getElementById('cartModal').classList.remove('active'); }
+
+    // VIEW 1: CART LIST
+    function renderCartView() {
+        const content = document.getElementById('cartContent');
+        document.querySelector('.modal-header h2').innerText = "Keranjang Belanja";
+
+        if (cart.length === 0) {
+            content.innerHTML = `<div class="cart-empty"><p>🛒 Keranjang masih kosong</p></div>`;
+            return;
+        }
+
+        const total = cart.reduce((a, b) => a + (b.price * b.quantity), 0);
+
+        content.innerHTML = `
+            <div style="max-height:400px; overflow-y:auto;">
+                ${cart.map((item, i) => `
+                    <div class="cart-item">
+                        <div class="cart-item-image ${item.bg}">${renderProductImage(item.icon)}</div>
+                        <div class="cart-item-details">
+                            <h3>${item.name}</h3>
+                            <p>${item.colorDisplay} | ${item.size}</p>
+                            <div class="cart-item-price">Rp ${item.price.toLocaleString('id-ID')}</div>
+                        </div>
+                        <div>
+                            <button onclick="removeItem(${i})" style="color:red; border:none; background:none; cursor:pointer;">Hapus</button>
+                            <div style="font-weight:bold; margin-top:5px; background:#eee; padding:2px 8px; border-radius:8px;">x${item.quantity}</div>
+                        </div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                        <span>Pajak (10%):</span>
-                        <span>Rp ${tax.toLocaleString('id-ID')}</span>
+                `).join('')}
+            </div>
+            <div style="border-top:2px dashed #ddd; margin-top:15px; padding-top:15px; display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-weight:600;">Total:</span>
+                <span style="font-weight:bold; font-size:1.3rem; color:#8B4545;">Rp ${total.toLocaleString('id-ID')}</span>
+            </div>
+            <button class="btn-next" onclick="renderCheckoutForm()">Lanjut Checkout ➤</button>
+        `;
+    }
+
+    // VIEW 2: DATA & METHOD
+    function renderCheckoutForm() {
+        if (!isUserAuthenticated) {
+            alert('Silakan login terlebih dahulu.');
+            window.location.href = '{{ route("user.login") }}';
+            return;
+        }
+
+        const content = document.getElementById('cartContent');
+        document.querySelector('.modal-header h2').innerText = "Pengiriman & Pembayaran";
+
+        const fName = window.tempOrderData.name || userName;
+        const fPhone = window.tempOrderData.phone || userPhone;
+        const fEmail = window.tempOrderData.email || userEmail;
+        const fAddress = window.tempOrderData.address || '';
+        const fNote = window.tempOrderData.note || '';
+
+        content.innerHTML = `
+            <div class="btn-back-link" onclick="renderCartView()">⬅ Kembali</div>
+            <div class="checkout-form">
+                <div class="form-group"><label>Nama Penerima</label><input type="text" id="cName" value="${fName}"></div>
+                <div class="form-row">
+                    <div class="form-group"><label>Email</label><input type="email" id="cEmail" value="${fEmail}"></div>
+                    <div class="form-group"><label>No WhatsApp</label><input type="tel" id="cPhone" value="${fPhone}"></div>
+                </div>
+                <div class="form-group"><label>Alamat Lengkap</label><textarea id="cAddress" rows="2">${fAddress}</textarea></div>
+                <div class="form-group"><label>Catatan</label><input type="text" id="cNote" value="${fNote}"></div>
+
+                <label style="font-weight:600; margin-top:10px; display:block;">Metode Pembayaran</label>
+                <div class="payment-grid">
+                    <div class="payment-card" onclick="showPaymentDetail('transfer')">
+                        <span class="pay-icon">🏦</span><span class="pay-name">Transfer Bank</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.2rem; color: #8B4545; padding-top: 10px; border-top: 1px dashed #8B4545;">
-                        <span>Total:</span>
-                        <span>Rp ${total.toLocaleString('id-ID')}</span>
+                    <div class="payment-card" onclick="showPaymentDetail('ewallet')">
+                        <span class="pay-icon">📱</span><span class="pay-name">QRIS / E-Wallet</span>
+                    </div>
+                    <div class="payment-card" onclick="showPaymentDetail('cod')">
+                        <span class="pay-icon">🚚</span><span class="pay-name">COD</span>
                     </div>
                 </div>
-                <center>
-                    <a href="{{ route('catalogue') }}" class="btn-primary" style="width: 100%; margin-top: 20px;">Lanjut ke Pembayaran & Detail</a>
-                </center>
+            </div>
+        `;
+    }
+
+    // VIEW 3: PAYMENT DETAIL & WA BUTTON (MODIFIKASI UTAMA)
+    function showPaymentDetail(method) {
+        const name = document.getElementById('cName').value;
+        const email = document.getElementById('cEmail').value;
+        const phone = document.getElementById('cPhone').value;
+        const address = document.getElementById('cAddress').value;
+        const note = document.getElementById('cNote').value;
+
+        if(!name || !email || !phone || !address) { alert("Lengkapi data pengiriman dulu ya!"); return; }
+
+        window.tempOrderData = { name, email, phone, address, note, method };
+
+        // Hitung Total
+        const subtotal = cart.reduce((n, i) => n + (i.price * i.quantity), 0);
+        const total = subtotal + (subtotal * 0.1); // Pajak 10%
+        const totalStr = total.toLocaleString('id-ID');
+
+        const content = document.getElementById('cartContent');
+        document.querySelector('.modal-header h2').innerText = "Konfirmasi Pesanan";
+
+        let detailHtml = '';
+
+        // --- LOGIKA TAMPILAN BERBEDA TIAP METODE ---
+        if (method === 'transfer') {
+            detailHtml = `
+                <div class="payment-detail-card">
+                    <span class="bank-logo">🏦</span>
+                    <p class="bank-name">BANK CENTRAL ASIA (BCA)</p>
+                    <div class="bank-number">123-456-7890</div>
+                    <p class="bank-name">a.n Zulaeha Tailor</p>
+                    <button class="copy-btn" onclick="navigator.clipboard.writeText('1234567890'); alert('Disalin!')">Salin No. Rek</button>
+                </div>
+                <p style="text-align:center; font-size:0.9rem; color:#666;">Silakan transfer sesuai nominal di bawah ini lalu konfirmasi ke Admin.</p>
             `;
-            
-            cartContent.innerHTML = html;
-        }
-
-
-        // 5. INISIALISASI
-        document.addEventListener('DOMContentLoaded', () => {
-            renderProducts('all');
-            updateHomeCartCount(); // Panggil saat DOM Load
-
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    const category = tab.getAttribute('data-category');
-                    renderProducts(category);
-                });
-            });
-        });
-
-        
-        // Close modal when clicking outside
-        document.getElementById('cartModal').addEventListener('click', function(event) {
-            if (event.target === this) {
-                closeCart();
-            }
-        });
-
-        // Close modal when clicking X
-        document.querySelector('.close-modal').addEventListener('click', closeCart);
-
-
-        // 3. FUNGSI RENDER PRODUK DI HALAMAN
-        function renderProducts(filterCategory = 'all') {
-            const container = document.getElementById('productContainer');
-            container.innerHTML = ''; 
-
-            const filteredProducts = products.filter(product => {
-                if (filterCategory === 'all') return true;
-                if (filterCategory === 'new') return product.badge === 'new';
-                return product.category === filterCategory;
-            });
-
-            if (filteredProducts.length === 0) {
-                container.innerHTML = '<p style="text-align:center; width:100%; padding:20px; color:white;">Produk tidak ditemukan untuk kategori ini.</p>';
-                return;
-            }
-
-            filteredProducts.slice(0, 3).forEach(product => { // Batasi 3 produk di halaman Home
-                let badgeHTML = '';
-                if (product.badge) {
-                    let badgeText = product.badge; 
-                    if(product.badge === 'sale') badgeText = 'Sale 30%';
-                    if(product.badge === 'hot') badgeText = 'Hot Item';
-                    
-                    badgeHTML = `<div class="product-badge ${product.badge}">${badgeText}</div>`;
-                }
-
-                const oldPriceHTML = product.oldPrice 
-                    ? `<span class="old-price">Rp ${product.oldPrice.toLocaleString('id-ID')}</span>` 
-                    : '';
-
-                const productHTML = `
-                    <div class="product-card">
-                        <div class="product-image ${product.bg}">
-                            <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover;">
-                            ${badgeHTML}
-                            <div class="product-overlay">
-                                <a href="{{ route('catalogue') }}" class="btn-quick-view">Lihat Detail</a>
-                                <button class="btn-add-cart" onclick="addToCart(${product.id})">Tambah ke Keranjang</button>
-                            </div>
-                        </div>
-                        <div class="product-info">
-                            <div class="product-rating">⭐⭐⭐⭐⭐ <span>(${product.reviews || 'N/A'})</span></div>
-                            <h3>${product.name}</h3>
-                            <p class="product-desc">${product.desc}</p>
-                            <div class="product-footer">
-                                <p class="price">Rp ${product.price.toLocaleString('id-ID')} ${oldPriceHTML}</p>
-                                <button class="btn-wishlist">♡</button>
-                            </div>
-                        </div>
+        } else if (method === 'ewallet') {
+            detailHtml = `
+                <div class="payment-detail-card">
+                    <span class="bank-logo">📱</span>
+                    <p style="font-weight:bold; margin-bottom:10px;">SCAN QRIS / DANA / OVO</p>
+                    <div style="background:#eee; width:150px; height:150px; margin:0 auto; display:flex; align-items:center; justify-content:center; border-radius:10px;">
+                        <span style="font-size:2rem;">🔳 QR</span>
                     </div>
-                `;
-                container.innerHTML += productHTML;
-            });
+                    <p style="margin-top:10px; font-size:0.9rem;">a.n Zulaeha Tailor</p>
+                </div>
+                <p style="text-align:center; font-size:0.9rem; color:#666;">Scan kode di atas untuk pembayaran instan.</p>
+            `;
+        } else if (method === 'cod') {
+            detailHtml = `
+                <div class="payment-detail-card" style="border-top-color:#F59B9A;">
+                    <span class="bank-logo">🚚</span>
+                    <p style="font-weight:bold; font-size:1.1rem;">BAYAR DI TEMPAT (COD)</p>
+                    <p style="font-size:0.9rem; color:#666; margin-top:10px;">
+                        Pastikan alamat Anda lengkap dan nomor HP aktif. Kurir akan menghubungi sebelum pengiriman.
+                    </p>
+                    <div style="background:#fff3cd; color:#856404; padding:10px; border-radius:8px; margin-top:15px; font-size:0.85rem;">
+                        ⚠️ Mohon siapkan uang pas saat kurir datang.
+                    </div>
+                </div>
+            `;
         }
-        
-        function scrollToSection(sectionId) {
-            const element = document.getElementById(sectionId);
-            const offset = 80;
-            const elementPosition = element.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - offset;
 
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
+        content.innerHTML = `
+            <div class="btn-back-link" onclick="renderCheckoutForm()">⬅ Ganti Metode</div>
+            ${detailHtml}
+            
+            <div class="total-pay-box">
+                <span>Total Tagihan:</span>
+                <strong style="font-size:1.3rem; color:#8B4545;">Rp ${totalStr}</strong>
+            </div>
+
+            <button class="btn-wa-confirm" id="btnProsesWA" onclick="processToWA()">
+                <span style="font-size:1.2rem;">💬</span> Konfirmasi Pesanan via WhatsApp
+            </button>
+        `;
+    }
+
+    // 6. PROSES SIMPAN KE DB -> LALU BUKA WA
+    async function processToWA() {
+        const btn = document.getElementById('btnProsesWA');
+        btn.innerHTML = '⏳ Menyimpan Pesanan...';
+        btn.disabled = true;
+
+        const data = window.tempOrderData;
+        const subtotal = cart.reduce((n, i) => n + (i.price * i.quantity), 0);
+        const total = subtotal + (subtotal * 0.1);
+
+        // Siapkan Nama Metode untuk Database
+        let dbMethod = "Transfer Bank";
+        if(data.method === 'ewallet') dbMethod = "E-Wallet";
+        if(data.method === 'cod') dbMethod = "COD";
+
+        // Payload Database
+        const payload = {
+            name: data.name, email: data.email, phone: data.phone,
+            address: data.address, note: data.note,
+            payment_method: dbMethod, cart: cart, total_price: total
+        };
+
+        try {
+            // 1. SIMPAN KE DATABASE DULU (AJAX)
+            const response = await fetch(placeOrderUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                body: JSON.stringify(payload)
             });
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                // 2. JIKA SUKSES DISIMPAN, SIAPKAN PESAN WA
+                
+                // Format List Barang
+                let itemsList = "";
+                cart.forEach((item, i) => {
+                    itemsList += `${i+1}. ${item.name} (${item.colorDisplay}, ${item.size}) x${item.quantity}\n`;
+                });
+
+                // 2. PERBAIKI TEMPLATE CHAT (Ganti %0A jadi \n)
+                let msg = `*Halo Admin Zulaeha Tailor!*\n`;
+                msg += `Saya ingin konfirmasi pesanan baru (Order ID: #${result.order_number}):\n\n`;
+                msg += `👤 *Nama:* ${data.name}\n`;
+                msg += `📞 *No HP:* ${data.phone}\n`;
+                msg += `🏠 *Alamat:* ${data.address}\n`;
+                msg += `----------------------------------\n`;
+                msg += `🛍️ *Detail Pesanan:*\n${itemsList}`;
+                msg += `----------------------------------\n`;
+                msg += `💰 *Total Tagihan:* Rp ${total.toLocaleString('id-ID')}\n`;
+                msg += `💳 *Metode:* ${dbMethod}\n`;
+                if(data.note) msg += `📝 *Catatan:* ${data.note}\n`;
+                msg += `\nMohon diproses ya, Terima Kasih!`;
+
+                // 3. RESET KERANJANG & BUKA WA
+                cart = []; saveCartState(); updateCartCount();
+                
+                // Buka WhatsApp di Tab Baru
+                window.open(`https://wa.me/${ADMIN_WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+                
+                // Tampilkan Modal Sukses di Web
+                showOrderSuccess(result, data.name, total, dbMethod);
+
+            } else {
+                alert('Gagal menyimpan pesanan: ' + (result.message || 'Error'));
+                btn.innerHTML = 'Coba Lagi';
+                btn.disabled = false;
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Koneksi Error. Pastikan internet lancar.');
+            btn.innerHTML = 'Coba Lagi';
+            btn.disabled = false;
         }
-    </script>
+    }
+
+    function showOrderSuccess(res, name, total, method) {
+        const content = document.getElementById('cartContent');
+        document.querySelector('.modal-header h2').innerText = "Pesanan Terkirim!";
+        
+        content.innerHTML = `
+            <div class="order-success">
+                <h2>✅ Pesanan Berhasil!</h2>
+                <div class="queue-number">
+                    <h3>ANTRIAN</h3>
+                    <div class="queue-display">#${res.queue_number}</div>
+                </div>
+                <p>Data pesanan sudah masuk ke sistem kami dan WhatsApp Admin akan terbuka otomatis.</p>
+                <div class="order-summary-box">
+                    <p><strong>Kode:</strong> ${res.order_number}</p>
+                    <p><strong>Total:</strong> Rp ${parseInt(total).toLocaleString('id-ID')}</p>
+                    <p><strong>Metode:</strong> ${method}</p>
+                </div>
+                <button class="checkout-btn" style="width:auto; padding:10px 20px;" onclick="location.reload()">Selesai</button>
+            </div>
+        `;
+    }
+    
+    function removeItem(i) { cart.splice(i, 1); saveCartState(); updateCartCount(); renderCartView(); }
+    document.getElementById('cartModal').addEventListener('click', function(e) { if(e.target===this) closeCart(); });
+
+    // ... kode script lainnya di atas
+
+// ============================================================
+// 7. FUNGSI KONTAK KE WA
+// ============================================================
+function sendContactWA() {
+    const name = document.getElementById('contactName').value;
+    const email = document.getElementById('contactEmail').value;
+    const phone = document.getElementById('contactPhone').value;
+    const message = document.getElementById('contactMessage').value;
+
+    if (!name || !phone || !message) {
+        alert("Mohon lengkapi Nama, Nomor WhatsApp, dan Pesan Anda.");
+        return;
+    }
+
+    let msg = `*Pesan Baru dari Halaman Kontak Website*\n\n`;
+    msg += `👤 *Nama:* ${name}\n`;
+    msg += `📞 *No HP/WA:* ${phone}\n`;
+    msg += `📧 *Email:* ${email || 'Tidak diisi'}\n`; // Jika email kosong
+    msg += `----------------------------------\n`;
+    msg += `💬 *Isi Pesan:*\n${message}\n\n`;
+    msg += `Mohon segera dibalas ya, Terima Kasih!`;
+
+    // Redirect ke WhatsApp dengan encoding yang benar
+    window.open(`https://wa.me/${ADMIN_WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+// ... kode script lainnya di bawah
+
+</script>
 </body>
 </html>
