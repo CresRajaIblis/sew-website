@@ -353,23 +353,33 @@
     </section>
 
     <footer>
-        <div class="footer-container">
-            <div class="footer-section">
-                <h3>Zulaeha Tailor</h3>
-                <p>Menyediakan busana berkualitas permium.</p>
-            </div>
-            <div class="footer-section">
-                <h3>Link Cepat</h3>
-                <a href="#home">Home</a>
-                <a href="#collection-section">Koleksi</a>
-            </div>
-            <div class="footer-section">
-                <h3>Kontak</h3>
-                <p>📞 +62 813-7367-7824</p>
-                <p>📍 Palembang, Indonesia</p>
-            </div>
+    <div class="footer-container">
+        <div class="footer-section">
+            <h3>Tentang Zulaeha Taylor</h3>
+            <p>Menyediakan busana berkualitas permium dengan desain modern dan elegan sejak 2010.</p>
         </div>
-        <p class="footer-bottom">© 2025 Zulaeha Tailor. All Rights Reserved.</p>
+        <div class="footer-section">
+            <h3>Link Cepat</h3>
+            <ul>
+                <li><a href="{{ url('/') }}">Home</a></li> 
+                <li><a href="{{ route('catalogue') }}">Kategori</a></li> 
+                <li><a href="#collection">Koleksi</a></li> 
+                <li><a href="#contact">Kontak</a></li> 
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Kontak</h3>
+            <p>📞 +62 813-7367-7824</p>
+            <p>✉️ zulstailor@gmail.com</p>
+            <p>📍 Jl. Prof. Dr. Soepomo. Lrg. Rizka No. 561, Palembang</p>
+        </div>
+        <div class="footer-section">
+            <h3>Jam Operasional</h3>
+            <p>Senin - Jumat: 08.00 - 20.00</p>
+            <p>Sabtu - Minggu: 12.00 - 18.00</p>
+        </div>
+    </div>
+    <p class="footer-bottom">© 2025 Zulaeha Tailor. All Rights Reserved.</p>
     </footer>
 
     <div class="modal" id="cartModal">
