@@ -30,24 +30,21 @@
 <body class="flex h-screen overflow-hidden bg-theme-bg font-sans">
 
     <!-- SIDEBAR -->
-    <aside class="w-64 bg-theme-dark text-white flex flex-col justify-between flex-shrink-0 z-20">
+    <aside class="w-64 bg-theme-dark text-white flex flex-col justify-between flex-shrink-0 z-20 shadow-xl">
         <div class="p-6">
-            <h1 class="text-xl font-normal mb-12 tracking-wide pl-2">Hello Admin!</h1>
-            <nav class="space-y-4 pl-2 sidebar">
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-4 text-gray-400 hover:text-white transition-all"><div class="w-6 text-center"><i class="fa-solid fa-table-columns text-lg"></i></div><span>Dashboard</span></a>
-                <a href="{{ route('admin.keuangan') }}" class="flex items-center space-x-4 text-gray-400 hover:text-white transition-all"><div class="w-6 text-center"><i class="fa-solid fa-sack-dollar text-lg"></i></div><span>Keuangan</span></a>
-                <a href="{{ route('admin.akun') }}" class="flex items-center space-x-4 text-white font-medium active"><div class="w-6 text-center"><i class="fa-solid fa-user text-lg"></i></div><span>Akun</span></a>
-                <a href="{{ route('admin.pesanan') }}" class="flex items-center space-x-4 text-gray-400 hover:text-white transition-all"><div class="w-6 text-center"><i class="fa-solid fa-file-invoice text-lg"></i></div><span>Pesanan</span></a>
-                <a href="{{ route('admin.ulasan') }}" class="flex items-center space-x-4 text-gray-400 hover:text-white transition-all"><div class="w-6 text-center"><i class="fa-solid fa-comments text-lg"></i></div><span>Ulasan</span></a>
+            <h1 class="text-xl font-normal mb-12 tracking-wide pl-2 border-b border-gray-600 pb-4">Hello Admin!</h1>
+            <nav class="space-y-4 pl-2">
+                <a href="{{ url('/admin/dashboard') }}" class="flex items-center space-x-4 text-gray-400 hover:text-white transition-all p-2 rounded hover:bg-white/5"><div class="w-6 text-center"><i class="fa-solid fa-table-columns text-lg"></i></div><span>Dashboard</span></a>
+                <a href="{{ url('/admin/keuangan') }}" class="flex items-center space-x-4 text-gray-400 scale-105 origin-left transition-all active p-2 rounded"><div class="w-6 text-center"><i class="fa-solid fa-sack-dollar text-lg"></i></div><span>Keuangan</span></a>
+                <a href="{{ url('/admin/akun') }}" class="flex items-center space-x-4 text-white font-medium hover:text-white transition-all p-2 rounded hover:bg-white/5"><div class="w-6 text-center"><i class="fa-solid fa-user text-lg"></i></div><span>Akun</span></a>
+                <a href="{{ url('/admin/pesanan') }}" class="flex items-center space-x-4 text-gray-400 hover:text-white transition-all p-2 rounded hover:bg-white/5"><div class="w-6 text-center"><i class="fa-solid fa-file-invoice text-lg"></i></div><span>Pesanan</span></a>
+                <a href="{{ url('/admin/ulasan') }}" class="flex items-center space-x-4 text-gray-400 hover:text-white transition-all p-2 rounded hover:bg-white/5"><div class="w-6 text-center"><i class="fa-solid fa-comments text-lg"></i></div><span>Ulasan</span></a>
             </nav>
         </div>
         <div class="p-8 mb-4">
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
-                <button type="submit" class="flex items-center space-x-3 text-white hover:text-rose-200">
-                    <i class="fa-solid fa-arrow-right-from-bracket rotate-180"></i> 
-                    <span>Log Out</span>
-                </button>
+                <button type="submit" class="flex items-center space-x-3 text-white hover:text-rose-300 w-full transition-colors"><i class="fa-solid fa-arrow-right-from-bracket rotate-180"></i><span>Log Out</span></button>
             </form>
         </div>
     </aside>

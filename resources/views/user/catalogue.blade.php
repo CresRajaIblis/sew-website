@@ -158,46 +158,67 @@
         .btn-add-cart { background: #F59B9A; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 25px; cursor: pointer; font-weight: 600; transition: all 0.3s; width: 100%; margin-top: 1rem; }
         .btn-add-cart:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(245, 155, 154, 0.3); }
 
-        /* Cart Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; }
-        .modal.active { display: flex; }
-        .modal-content { background: white; border-radius: 20px; padding: 2rem; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #E0E0E0; }
-        .modal-header h2 { color: #8B4545; font-size: 2rem; }
-        .close-modal { background: none; border: none; font-size: 2rem; cursor: pointer; color: #666; transition: all 0.3s; }
-        .close-modal:hover { color: #8B4545; }
-        .cart-empty { text-align: center; padding: 3rem; color: #666; }
-        .cart-items { margin-bottom: 2rem; }
-        .cart-item { display: flex; gap: 1.5rem; padding: 1.5rem; border: 2px solid #E0E0E0; border-radius: 15px; margin-bottom: 1rem; transition: all 0.3s; }
-        .cart-item:hover { border-color: #F59B9A; }
-        .cart-item-image { width: 100px; height: 100px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 3rem; overflow: hidden; }
-        .cart-item-image img { width: 100%; height: 100%; object-fit: cover; }
-        .cart-item-details { flex: 1; }
-        .cart-item-details h3 { color: #2c2c2c; margin-bottom: 0.5rem; }
-        .cart-item-details p { color: #666; font-size: 0.9rem; margin: 0.3rem 0; }
-        .cart-item-price { color: #8B4545; font-weight: 700; font-size: 1.3rem; }
-        .cart-item-actions { display: flex; align-items: center; gap: 1rem; margin-top: 1rem; }
-        .quantity-control { display: flex; align-items: center; gap: 0.5rem; }
-        .quantity-btn { background: #F59B9A; color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-weight: 700; transition: all 0.3s; }
-        .quantity-btn:hover { background: #8B4545; }
-        .quantity-display { font-weight: 600; min-width: 30px; text-align: center; }
-        .remove-item { background: #FF6B6B; color: white; border: none; padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
-        .remove-item:hover { background: #FF5252; }
-        .cart-summary { background: #FFF5F5; padding: 1.5rem; border-radius: 15px; margin-top: 2rem; }
-        .summary-row { display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 1.1rem; }
-        .summary-row.total { font-size: 1.5rem; font-weight: 700; color: #8B4545; padding-top: 1rem; border-top: 2px solid #F59B9A; }
-        .checkout-btn { background: linear-gradient(135deg, #8B4545 0%, #F59B9A 100%); color: white; border: none; padding: 1.2rem; border-radius: 30px; cursor: pointer; font-weight: 700; font-size: 1.1rem; width: 100%; margin-top: 1.5rem; transition: all 0.3s; }
-        .checkout-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(139, 69, 69, 0.4); }
-        
-        .payment-methods { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem; }
-        .payment-option { padding: 1rem; border: 2px solid #E0E0E0; border-radius: 10px; text-align: center; cursor: pointer; transition: all 0.3s; }
-        .payment-option:hover, .payment-option.selected { border-color: #F59B9A; background: #FFF5F5; }
-        .checkout-form { margin-top: 2rem; }
-        .form-section { margin-bottom: 2rem; }
-        .form-group { margin-bottom: 1rem; }
-        .form-group input, .form-group textarea { width: 100%; padding: 1rem; border: 2px solid #E0E0E0; border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 1rem; transition: all 0.3s; }
-        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #F59B9A; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        /* --- STYLE KERANJANG & CHECKOUT BARU --- */
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 44, 44, 0.6); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+.modal.active { display: flex; animation: fadeIn 0.3s ease-out; }
+
+.modal-content { 
+    background: white; border-radius: 24px; width: 95%; max-width: 700px; 
+    max-height: 90vh; overflow-y: auto; position: relative; 
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); display: flex; flex-direction: column;
+}
+
+.modal-header { 
+    background: #FFF5F5; padding: 1.5rem 2rem; 
+    display: flex; justify-content: space-between; align-items: center; 
+    border-bottom: 1px solid rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 10;
+}
+.modal-header h2 { color: #8B4545; font-size: 1.5rem; font-weight: 700; margin: 0; }
+.close-modal { background: white; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; color: #666; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: 0.3s; }
+.close-modal:hover { background: #8B4545; color: white; transform: rotate(90deg); }
+
+.modal-body { padding: 2rem; }
+
+/* Stepper (Indikator Langkah) */
+.stepper { display: flex; justify-content: space-between; margin-bottom: 2rem; position: relative; }
+.stepper::before { content: ''; position: absolute; top: 15px; left: 0; width: 100%; height: 2px; background: #eee; z-index: 0; }
+.step { position: relative; z-index: 1; text-align: center; width: 33.33%; }
+.step-circle { width: 32px; height: 32px; background: #eee; border-radius: 50%; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; color: #999; font-weight: 600; font-size: 0.9rem; transition: 0.3s; border: 2px solid white; }
+.step.active .step-circle { background: #F59B9A; color: white; box-shadow: 0 0 0 3px rgba(245, 155, 154, 0.3); }
+.step.completed .step-circle { background: #8B4545; color: white; }
+.step-label { font-size: 0.8rem; color: #999; font-weight: 500; }
+.step.active .step-label, .step.completed .step-label { color: #8B4545; font-weight: 700; }
+
+/* Item Keranjang Modern */
+.cart-item-modern { 
+    display: flex; gap: 1rem; padding: 1rem; border: 1px solid #eee; border-radius: 16px; 
+    margin-bottom: 1rem; transition: all 0.3s; background: white; align-items: center;
+}
+.cart-item-modern:hover { border-color: #F59B9A; box-shadow: 0 5px 15px rgba(0,0,0,0.03); transform: translateY(-2px); }
+.cart-img-box { width: 80px; height: 80px; border-radius: 12px; overflow: hidden; background: #f9f9f9; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.cart-img-box img { width: 100%; height: 100%; object-fit: cover; }
+.cart-info { flex: 1; }
+.cart-info h4 { font-size: 1rem; margin-bottom: 4px; color: #333; }
+.cart-meta { font-size: 0.85rem; color: #888; display: flex; gap: 10px; margin-bottom: 5px; }
+.cart-price { color: #8B4545; font-weight: 700; font-size: 1.1rem; }
+.cart-remove-btn { color: #ff6b6b; cursor: pointer; background: #fff0f0; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; border: none; font-weight: 600; }
+
+/* Total Bar */
+.cart-total-bar { background: #FFF5F5; border-radius: 16px; padding: 1.5rem; margin-top: 2rem; border: 1px dashed #F59B9A; }
+.total-row { display: flex; justify-content: space-between; margin-bottom: 8px; color: #555; }
+.total-row.final { font-size: 1.4rem; font-weight: 800; color: #8B4545; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(0,0,0,0.05); }
+
+/* Form & Payment */
+.modern-input { width: 100%; padding: 12px 15px; border: 2px solid #eee; border-radius: 12px; font-family: 'Poppins', sans-serif; transition: 0.3s; margin-bottom: 15px; }
+.modern-input:focus { border-color: #F59B9A; outline: none; }
+.payment-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem; }
+.payment-option-card { border: 2px solid #eee; border-radius: 16px; padding: 1.5rem 1rem; text-align: center; cursor: pointer; transition: 0.3s; background: white; }
+.payment-option-card.active, .payment-option-card:hover { border-color: #F59B9A; background: #FFF5F5; }
+.btn-block { width: 100%; display: block; text-align: center; padding: 1rem; background: #8B4545; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 1rem; }
+
+/* Tiket Sukses */
+.queue-ticket { background: white; border: 2px dashed #8B4545; border-radius: 20px; padding: 2rem; margin: 2rem auto; max-width: 350px; text-align: center; }
+.queue-value { font-size: 3.5rem; font-weight: 800; color: #8B4545; }
 
         /* Footer Styles */
         footer { background-color: #15202b; color: #ccc; padding: 40px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 16px; }
@@ -389,15 +410,16 @@
         </div>
     </section>
 
-    <div class="modal" id="cartModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Keranjang Belanja</h2>
-                <button class="close-modal" onclick="closeCart()">×</button>
-            </div>
-            <div id="cartContent"></div>
+   <div class="modal" id="cartModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Keranjang Belanja</h2>
+            <button class="close-modal" onclick="closeCart()">×</button>
         </div>
+        <div class="modal-body" id="cartBody">
+            </div>
     </div>
+</div>
 
     <footer>
     <div class="footer-container">
@@ -435,8 +457,18 @@
     // 1. DATA & VARIABEL GLOBAL
     // ============================================================
     const products = @json($products);
-    const ADMIN_WA_NUMBER = '6281373677824'; // Nomor WA Admin
-    
+    const ADMIN_WA_NUMBER = '6281373677824'; 
+    const csrfToken = '{{ csrf_token() }}';
+    const placeOrderUrl = '{{ route("checkout.process") }}';
+
+    // Data User Login
+    const isUserAuthenticated = {{ Auth::check() && Auth::user()->role === 'user' ? 'true' : 'false' }};
+    const userData = {
+        name: '{{ Auth::user()->name ?? "" }}',
+        email: '{{ Auth::user()->email ?? "" }}',
+        phone: '{{ Auth::user()->phone ?? "" }}'
+    };
+
     const colorNames = {
         'black': 'Hitam', 'white': 'Putih', 'navy': 'Biru Navy',
         'army': 'Hijau Army', 'maroon': 'Merah Marun', 'grey': 'Abu-abu'
@@ -446,42 +478,45 @@
     let currentGender = 'semua';
     let currentCategory = 'semua';
     
-    const csrfToken = '{{ csrf_token() }}';
-    const placeOrderUrl = '{{ route('checkout.process') }}';
-    
-    const isUserAuthenticated = {{ Auth::check() && Auth::user()->role === 'user' ? 'true' : 'false' }};
-    const userName = '{{ Auth::user()->name ?? '' }}';
-    const userEmail = '{{ Auth::user()->email ?? '' }}';
-    const userPhone = '{{ Auth::user()->phone ?? '' }}';
-
-    window.tempOrderData = {};
+    // Penyimpanan data sementara checkout
+    window.tempOrderData = {}; 
 
     // ============================================================
-    // 2. INITIALIZATION
+    // 2. HELPER GAMBAR (INI YANG DIPERBAIKI)
     // ============================================================
-    document.addEventListener('DOMContentLoaded', function() {
-        const savedCart = localStorage.getItem('zulaehaCart');
-        if (savedCart) {
-            try { cart = JSON.parse(savedCart); } catch (e) { cart = []; }
-        }
-        renderProducts();
-        updateCartCount();
-    });
-    
-    function saveCartState() { localStorage.setItem('zulaehaCart', JSON.stringify(cart)); }
+    function getImageUrl(imgString) {
+        if (!imgString) return 'https://via.placeholder.com/300?text=No+Image';
+        
+        // Jika link lengkap (http...), pakai langsung
+        if (imgString.startsWith('http')) return imgString;
+        
+        // JIKA FOLDER DI public/assets/image:
+        return `/assets/image/${imgString}`;
+    }
 
+    // Fungsi render gambar di card katalog
     function renderProductImage(icon) {
         if (!icon) return '<span style="font-size: 3rem;">📦</span>';
         const iconStr = String(icon);
-        if (iconStr.match(/\.(jpeg|jpg|gif|png)|(https?:\/\/)/) != null) {
-            return `<img src="${iconStr}" alt="product" style="width: 100%; height: 100%; object-fit: cover;">`;
+        if (iconStr.match(/\.(jpeg|jpg|gif|png)|(https?:\/\/)/) != null || !iconStr.includes(' ')) {
+            return `<img src="${getImageUrl(iconStr)}" alt="product" style="width: 100%; height: 100%; object-fit: cover;">`;
         }
         return `<span style="font-size: 4rem;">${iconStr}</span>`;
     }
 
+    function saveCartState() { localStorage.setItem('zulaehaCart', JSON.stringify(cart)); }
+    function updateCartCount() { document.getElementById('cartCount').innerText = cart.reduce((a,b)=>a+b.quantity, 0); }
+
     // ============================================================
     // 3. LOGIKA PRODUK
     // ============================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedCart = localStorage.getItem('zulaehaCart');
+        if (savedCart) { try { cart = JSON.parse(savedCart); } catch (e) { cart = []; } }
+        renderProducts();
+        updateCartCount();
+    });
+
     function renderProducts() {
         const grid = document.getElementById('productGrid');
         const filtered = products.filter(p => {
@@ -494,7 +529,7 @@
             <div class="product-card">
                 <div class="product-image ${product.bg || 'formal-bg'}">
                     ${product.badge ? `<div class="product-badge ${product.badge}">${product.badge === 'hot' ? '🔥 HOT' : '✨ NEW'}</div>` : ''}
-                    ${renderProductImage(product.icon || product.image)}
+                    ${renderProductImage(product.image || product.icon)}
                 </div>
                 <div class="product-info">
                     <div class="product-rating">★★★★★ <span>(${product.reviews || 0} ulasan)</span></div>
@@ -536,12 +571,20 @@
     function selectColor(el) { deselectAll(el, '.color-option'); el.classList.add('selected'); el.closest('.color-select').querySelector('input').classList.remove('active'); }
     function selectCustomColor(el) { deselectAll(el, '.color-option'); el.classList.add('selected'); let inp = el.closest('.color-select').querySelector('input'); inp.classList.add('active'); inp.focus(); }
     function deselectAll(el, selector) { el.closest('div').querySelectorAll(selector).forEach(i => i.classList.remove('selected')); }
-    function filterGender(g) { currentGender = g; updateFilterUI('.gender-btn', g); renderProducts(); }
-    function filterCategory(c) { currentCategory = c; updateFilterUI('.tab', c); renderProducts(); }
-    function updateFilterUI(sel, val) { document.querySelectorAll(sel).forEach(b => b.classList.toggle('active', b.dataset[sel.includes('gender')?'gender':'category'] === val)); }
-    function scrollToSection(id) { document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
     
-    // Add To Cart
+    function filterGender(g) { 
+        currentGender = g; 
+        document.querySelectorAll('.gender-btn').forEach(b => b.classList.toggle('active', b.innerText.toLowerCase().includes(g) || (g==='semua' && b.innerText==='Semua')));
+        renderProducts(); 
+    }
+    function filterCategory(c) { 
+        currentCategory = c; 
+        document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.innerText.toLowerCase().includes(c) || (c==='semua' && b.innerText==='Semua')));
+        renderProducts(); 
+    }
+    function scrollToSection(id) { document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
+
+    // ADD TO CART
     function addToCart(pid) {
         const product = products.find(p => p.id === pid);
         const card = event.target.closest('.product-card');
@@ -552,8 +595,19 @@
         if(!sizeEl || !colorEl) { alert("Mohon pilih Warna dan Ukuran terlebih dahulu!"); return; }
 
         let size = sizeEl.innerText === 'Custom' ? `Custom: ${card.querySelector('.custom-size-input').value}` : sizeEl.innerText;
-        let color = colorEl.classList.contains('color-custom') ? 'custom' : Array.from(colorEl.classList).find(c=>c.startsWith('color-')).replace('color-','');
-        let colorDisplay = color === 'custom' ? `Custom: ${card.querySelector('.custom-color-input').value}` : (colorNames[color] || color);
+        
+        let color = '';
+        let colorDisplay = '';
+        
+        if (colorEl.classList.contains('color-custom')) {
+            color = 'custom';
+            colorDisplay = `Custom: ${card.querySelector('.custom-color-input').value}`;
+        } else {
+            const classList = Array.from(colorEl.classList);
+            const colorClass = classList.find(c => c.startsWith('color-') && c !== 'color-option');
+            color = colorClass ? colorClass.replace('color-', '') : 'unknown';
+            colorDisplay = colorNames[color] || color;
+        }
         
         if((size.includes('Custom') && size.length<9) || (colorDisplay.includes('Custom') && colorDisplay.length<9)) {
             alert("Mohon isi detail custom dengan lengkap!"); return;
@@ -563,288 +617,262 @@
         
         const exist = cart.find(i => i.id === pid && i.size === size && i.color === color);
         if(exist) exist.quantity++;
-        else cart.push({ id: pid, name: product.name, price: product.price, icon, bg: product.bg, size, color, colorDisplay, quantity: 1 });
+        else cart.push({ 
+            id: pid, 
+            name: product.name, 
+            price: product.price, 
+            image: icon, 
+            bg: product.bg, 
+            size: size, 
+            color: color, 
+            colorDisplay: colorDisplay, 
+            quantity: 1 
+        });
 
         saveCartState(); updateCartCount();
-        alert("✅ Produk masuk keranjang!");
+        
+        const btn = event.target;
+        const oriText = btn.innerText;
+        btn.innerText = "✅ Masuk!";
+        btn.style.background = "#4CAF50";
+        setTimeout(() => { btn.innerText = oriText; btn.style.background = ""; }, 1000);
     }
 
-    function updateCartCount() { document.getElementById('cartCount').innerText = cart.reduce((a,b)=>a+b.quantity,0); }
-
     // ============================================================
-    // 4. MODAL CART & CHECKOUT FLOW
+    // 4. KERANJANG & CHECKOUT BARU (Updated)
     // ============================================================
-
-    function openCart() { document.getElementById('cartModal').classList.add('active'); renderCartView(); }
-    function closeCart() { document.getElementById('cartModal').classList.remove('active'); }
-
-    // VIEW 1: CART LIST
-    function renderCartView() {
-        const content = document.getElementById('cartContent');
-        const modalTitle = document.querySelector('.modal-header h2');
-        if(modalTitle) modalTitle.innerText = "Keranjang Belanja";
-
-        if (cart.length === 0) {
-            content.innerHTML = `<div class="cart-empty"><p>🛒 Keranjang masih kosong</p></div>`;
-            return;
-        }
-
-        const total = cart.reduce((n, i) => n + (i.price * i.quantity), 0);
-
-        content.innerHTML = `
-            <div style="max-height:400px; overflow-y:auto; padding-right:5px;">
-                ${cart.map((item, i) => `
-                    <div class="cart-item">
-                        <div class="cart-item-image ${item.bg||''}">
-                            ${renderProductImage(item.icon)}
-                        </div>
-                        <div class="cart-item-details">
-                            <h3>${item.name}</h3>
-                            <p>${item.colorDisplay} | ${item.size}</p>
-                            <div class="cart-item-price">Rp ${item.price.toLocaleString('id-ID')}</div>
-                        </div>
-                        <div style="text-align:right;">
-                            <button onclick="removeItem(${i})" style="color:red; border:none; background:none; cursor:pointer; font-weight:600;">Hapus</button>
-                            <div style="font-weight:bold; margin-top:5px; background:#eee; padding:2px 8px; border-radius:8px;">x${item.quantity}</div>
-                        </div>
-                    </div>
-                `).join('')}
+    
+    function renderStepper(step) {
+        return `
+            <div class="stepper">
+                <div class="step ${step >= 1 ? 'active' : ''} ${step > 1 ? 'completed' : ''}">
+                    <div class="step-circle">${step > 1 ? '✓' : '1'}</div>
+                    <div class="step-label">Keranjang</div>
+                </div>
+                <div class="step ${step >= 2 ? 'active' : ''} ${step > 2 ? 'completed' : ''}">
+                    <div class="step-circle">${step > 2 ? '✓' : '2'}</div>
+                    <div class="step-label">Data Diri</div>
+                </div>
+                <div class="step ${step >= 3 ? 'active' : ''}">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Bayar</div>
+                </div>
             </div>
-            <div style="border-top:2px dashed #ddd; margin-top:15px; padding-top:15px; display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-weight:600;">Total Sementara:</span>
-                <span style="font-weight:bold; font-size:1.3rem; color:#8B4545;">Rp ${total.toLocaleString('id-ID')}</span>
-            </div>
-            <button class="btn-next" onclick="renderCheckoutForm()">Lanjut Checkout ➤</button>
         `;
     }
 
-    // VIEW 2: FORM DATA & PAYMENT METHOD
-    function renderCheckoutForm() {
-        if (!isUserAuthenticated) {
-            alert('Silakan login terlebih dahulu untuk melanjutkan pembayaran.');
+    function openCart() { document.getElementById('cartModal').classList.add('active'); renderCartStep(); }
+    function closeCart() { document.getElementById('cartModal').classList.remove('active'); }
+
+    // --- STEP 1: KERANJANG ---
+    function renderCartStep() {
+        const body = document.getElementById('cartBody');
+        document.getElementById('modalTitle').innerText = 'Keranjang Belanja';
+        
+        if(cart.length === 0) {
+            body.innerHTML = `<div style="text-align:center; padding:3rem; color:#666;">Keranjang kosong.</div>`;
+            return;
+        }
+
+        const total = cart.reduce((a,b) => a + (b.price * b.quantity), 0);
+        const ppn = total * 0.1;
+        const grandTotal = total + ppn;
+
+        let html = renderStepper(1);
+        html += `<div style="max-height: 350px; overflow-y: auto;">`;
+        
+        cart.forEach((item, idx) => {
+            const displayColor = item.colorDisplay || item.color;
+            html += `
+                <div class="cart-item-modern">
+                    <div class="cart-img-box">
+                        <img src="${getImageUrl(item.image)}" alt="${item.name}"> 
+                    </div>
+                    <div class="cart-info">
+                        <h4>${item.name}</h4>
+                        <div class="cart-meta">
+                            <span>Size: ${item.size}</span>
+                            <span>Warna: ${displayColor}</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span class="cart-price">Rp ${item.price.toLocaleString('id-ID')}</span>
+                            <div>
+                                <span style="font-size:0.9rem; color:#666; margin-right:5px;">x${item.quantity}</span>
+                                <button class="cart-remove-btn" onclick="removeItem(${idx})">Hapus</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        html += `</div>
+            <div class="cart-total-bar">
+                <div class="total-row"><span>Subtotal</span> <span>Rp ${total.toLocaleString('id-ID')}</span></div>
+                <div class="total-row"><span>Pajak (10%)</span> <span>Rp ${ppn.toLocaleString('id-ID')}</span></div>
+                <div class="total-row final"><span>Total</span> <span>Rp ${grandTotal.toLocaleString('id-ID')}</span></div>
+            </div>
+            <button class="btn-block" onclick="renderDataStep()">Lanjut Isi Data <i class="fa-solid fa-arrow-right"></i></button>
+        `;
+        body.innerHTML = html;
+    }
+
+    // --- STEP 2: DATA DIRI ---
+    function renderDataStep() {
+        if(!isUserAuthenticated) {
+            alert('Silakan login terlebih dahulu!');
             window.location.href = '{{ route("user.login") }}';
             return;
         }
+        
+        const body = document.getElementById('cartBody');
+        document.getElementById('modalTitle').innerText = 'Data Pengiriman';
+        
+        const name = window.tempOrderData?.name || userData.name;
+        const phone = window.tempOrderData?.phone || userData.phone;
+        const email = window.tempOrderData?.email || userData.email;
+        const address = window.tempOrderData?.address || '';
 
-        const content = document.getElementById('cartContent');
-        document.querySelector('.modal-header h2').innerText = "Pengiriman & Pembayaran";
-
-        const fName = window.tempOrderData.name || userName;
-        const fPhone = window.tempOrderData.phone || userPhone;
-        const fEmail = window.tempOrderData.email || userEmail;
-        const fAddress = window.tempOrderData.address || '';
-        const fNote = window.tempOrderData.note || '';
-
-        content.innerHTML = `
-            <div class="btn-back-link" onclick="renderCartView()">⬅ Kembali ke Keranjang</div>
-
-            <div class="checkout-form">
-                <div class="form-group"><label>Nama Penerima</label><input type="text" id="cName" value="${fName}"></div>
-                <div class="form-row">
-                    <div class="form-group"><label>Email</label><input type="email" id="cEmail" value="${fEmail}"></div>
-                    <div class="form-group"><label>No WhatsApp</label><input type="tel" id="cPhone" value="${fPhone}"></div>
-                </div>
-                <div class="form-group"><label>Alamat Lengkap</label><textarea id="cAddress" rows="2">${fAddress}</textarea></div>
-                <div class="form-group"><label>Catatan (Opsional)</label><input type="text" id="cNote" value="${fNote}"></div>
-
-                <label style="font-weight:600; margin-top:10px; display:block;">Pilih Metode Pembayaran</label>
-                <div class="payment-grid">
-                    <div class="payment-card" onclick="showPaymentDetail('transfer')">
-                        <span class="pay-icon">🏦</span><span class="pay-name">Transfer Bank</span>
-                    </div>
-                    <div class="payment-card" onclick="showPaymentDetail('ewallet')">
-                        <span class="pay-icon">📱</span><span class="pay-name">QRIS / E-Wallet</span>
-                    </div>
-                    <div class="payment-card" onclick="showPaymentDetail('cod')">
-                        <span class="pay-icon">🚚</span><span class="pay-name">COD (Tunai)</span>
-                    </div>
-                </div>
+        let html = renderStepper(2);
+        html += `
+            <div onclick="renderCartStep()" style="cursor:pointer; color:#666; margin-bottom:1rem;">⬅ Kembali</div>
+            <div class="form-group"><label>Nama Penerima</label><input type="text" class="modern-input" id="fName" value="${name}"></div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div class="form-group"><label>No. HP / WA</label><input type="text" class="modern-input" id="fPhone" value="${phone}"></div>
+                <div class="form-group"><label>Email</label><input type="email" class="modern-input" id="fEmail" value="${email}"></div>
             </div>
+            <div class="form-group"><label>Alamat Lengkap</label><input type="text" class="modern-input" id="fAddress" value="${address}" placeholder="Jalan, No. Rumah, Kecamatan..."></div>
+            <div class="form-group"><label>Catatan (Opsional)</label><input type="text" class="modern-input" id="fNote" value="${window.tempOrderData?.note || ''}"></div>
+            <button class="btn-block" onclick="submitDataStep()">Lanjut Pembayaran <i class="fa-solid fa-credit-card"></i></button>
+        `;
+        body.innerHTML = html;
+    }
+
+    function submitDataStep() {
+        const name = document.getElementById('fName').value;
+        const phone = document.getElementById('fPhone').value;
+        const email = document.getElementById('fEmail').value;
+        const address = document.getElementById('fAddress').value;
+        const note = document.getElementById('fNote').value;
+
+        if(!name || !phone || !address) { alert('Nama, HP, dan Alamat wajib diisi!'); return; }
+
+        window.tempOrderData = { name, phone, email, address, note };
+        renderPaymentStep();
+    }
+
+    // --- STEP 3: PEMBAYARAN ---
+    function renderPaymentStep() {
+        const body = document.getElementById('cartBody');
+        document.getElementById('modalTitle').innerText = 'Pilih Pembayaran';
+        
+        let html = renderStepper(3);
+        html += `
+            <div onclick="renderDataStep()" style="cursor:pointer; color:#666; margin-bottom:1rem;">⬅ Kembali</div>
+            <div class="payment-grid">
+                <div class="payment-option-card" onclick="selectPayment('transfer', this)"><i class="fa-solid fa-bank"></i><br>Transfer</div>
+                <div class="payment-option-card" onclick="selectPayment('ewallet', this)"><i class="fa-solid fa-qrcode"></i><br>QRIS</div>
+                <div class="payment-option-card" onclick="selectPayment('cod', this)"><i class="fa-solid fa-truck"></i><br>COD</div>
+            </div>
+            <div id="paymentDetailArea" style="margin-top:20px;"></div>
+        `;
+        body.innerHTML = html;
+    }
+
+    function selectPayment(method, el) {
+        window.tempOrderData.method = method;
+        document.querySelectorAll('.payment-option-card').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+
+        const total = cart.reduce((a,b)=>a+(b.price*b.quantity),0) * 1.1;
+        const area = document.getElementById('paymentDetailArea');
+        
+        let detail = '';
+        if(method === 'transfer') detail = '<div style="background:#f9f9f9; padding:15px; border-radius:10px; text-align:center;"><p>Bank BCA: <strong>123-456-7890</strong><br>a.n Zulaeha Tailor</p></div>';
+        else if(method === 'ewallet') detail = '<div style="background:#f9f9f9; padding:15px; border-radius:10px; text-align:center;"><p>Scan QRIS saat konfirmasi WA</p></div>';
+        else detail = '<div style="background:#f9f9f9; padding:15px; border-radius:10px; text-align:center;"><p>Bayar tunai ke kurir</p></div>';
+
+        area.innerHTML = `
+            ${detail}
+            <div style="text-align:center; margin-top:20px;">
+                <p>Total Tagihan:</p>
+                <h2 style="color:#8B4545;">Rp ${total.toLocaleString('id-ID')}</h2>
+            </div>
+            <button class="btn-block" style="background:linear-gradient(135deg, #25D366, #128C7E);" onclick="processOrder()">Konfirmasi via WhatsApp <i class="fa-brands fa-whatsapp"></i></button>
         `;
     }
 
-    // VIEW 3: PAYMENT DETAIL & WA BUTTON
-    function showPaymentDetail(method) {
-        const name = document.getElementById('cName').value;
-        const email = document.getElementById('cEmail').value;
-        const phone = document.getElementById('cPhone').value;
-        const address = document.getElementById('cAddress').value;
-        const note = document.getElementById('cNote').value;
-
-        if(!name || !email || !phone || !address) { alert("Harap lengkapi Nama, Email, HP, dan Alamat!"); return; }
-
-        window.tempOrderData = { name, email, phone, address, note, method };
-
-        const subtotal = cart.reduce((n, i) => n + (i.price * i.quantity), 0);
-        const tax = subtotal * 0.1;
-        const total = subtotal + tax;
-
-        const content = document.getElementById('cartContent');
-        document.querySelector('.modal-header h2').innerText = "Selesaikan Pembayaran";
-
-        let detailHtml = '';
-
-        if (method === 'transfer') {
-            detailHtml = `
-                <div class="payment-detail-card">
-                    <span class="bank-logo">🏦</span>
-                    <p class="bank-name">BANK CENTRAL ASIA (BCA)</p>
-                    <div class="bank-number">123-456-7890</div>
-                    <p class="bank-name">a.n Zulaeha Tailor</p>
-                    <button class="copy-btn" onclick="navigator.clipboard.writeText('1234567890'); alert('Disalin!')">Salin No. Rek</button>
-                </div>
-                <p style="text-align:center; font-size:0.9rem; color:#666;">Silakan transfer nominal di bawah ini.</p>
-            `;
-        } else if (method === 'ewallet') {
-            detailHtml = `
-                <div class="payment-detail-card">
-                    <span class="bank-logo">📱</span>
-                    <p style="font-weight:bold; margin-bottom:10px;">SCAN QRIS / DANA / OVO</p>
-                    <div style="background:#eee; width:150px; height:150px; margin:0 auto; display:flex; align-items:center; justify-content:center; border-radius:10px; border:1px solid #ccc;">
-                        [ QR CODE ]
-                    </div>
-                    <p style="margin-top:10px;">a.n Zulaeha Tailor</p>
-                </div>
-            `;
-        } else if (method === 'cod') {
-            detailHtml = `
-                <div class="payment-detail-card" style="border-top-color:#F59B9A;">
-                    <span class="bank-logo">🚚</span>
-                    <p style="font-weight:bold;">BAYAR DI TEMPAT (COD)</p>
-                    <p style="font-size:0.9rem; margin-top:10px; color:#666;">Kurir akan menagih pembayaran tunai saat barang sampai.</p>
-                </div>
-            `;
-        }
-
-        content.innerHTML = `
-            <div class="btn-back-link" onclick="renderCheckoutForm()">⬅ Ganti Metode</div>
-            ${detailHtml}
-            <div class="total-pay-box">
-                <div>
-                    <div style="font-size:0.9rem; color:#666;">Total Tagihan (+Pajak):</div>
-                    <div style="font-size:1.4rem; font-weight:800; color:#8B4545;">Rp ${total.toLocaleString('id-ID')}</div>
-                </div>
-            </div>
-            
-            <button class="btn-wa-confirm" id="btnProsesWA" onclick="processToWA()">
-                <span style="font-size:1.2rem;">💬</span> Konfirmasi via WhatsApp
-            </button>
-        `;
-    }
-
-    // ============================================================
-    // 5. PROCESS ORDER -> SEND TO WA
-    // ============================================================
-    async function processToWA() {
-        const btn = document.getElementById('btnProsesWA');
+    // 5. PROSES ORDER
+    async function processOrder() {
+        const btn = document.querySelector('.btn-block');
         btn.innerHTML = '⏳ Memproses...';
         btn.disabled = true;
 
+        const total = cart.reduce((a,b)=>a+(b.price*b.quantity),0) * 1.1;
         const data = window.tempOrderData;
-        const subtotal = cart.reduce((n, i) => n + (i.price * i.quantity), 0);
-        const total = subtotal + (subtotal * 0.1);
-
-        let dbMethod = "Transfer Bank";
-        if(data.method === 'ewallet') dbMethod = "E-Wallet";
-        if(data.method === 'cod') dbMethod = "COD";
+        
+        let methodDb = 'Transfer';
+        if(data.method === 'ewallet') methodDb = 'QRIS';
+        if(data.method === 'cod') methodDb = 'COD';
 
         const payload = {
-            name: data.name, email: data.email, phone: data.phone,
+            name: data.name, phone: data.phone, email: data.email,
             address: data.address, note: data.note,
-            payment_method: dbMethod,
+            payment_method: methodDb,
             cart: cart, total_price: total
         };
 
         try {
-            // 1. SIMPAN KE DATABASE (AJAX)
-            const response = await fetch(placeOrderUrl, {
+            const res = await fetch(placeOrderUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
                 body: JSON.stringify(payload)
             });
+            const result = await res.json();
 
-            const result = await response.json();
-
-            if (response.ok && result.success) {
-                // 2. FORMAT PESAN WA
-                let itemsList = "";
-                cart.forEach((item, i) => {
-                    itemsList += `${i+1}. ${item.name} (${item.colorDisplay}, ${item.size}) x${item.quantity}\n`;
-                });
-
-                let msg = `*Halo Admin Zulaeha Tailor!*\n`;
-                msg += `Saya ingin konfirmasi pesanan baru (Order ID: #${result.order_number}):\n\n`;
-                msg += `👤 *Nama:* ${data.name}\n`;
-                msg += `📞 *No HP:* ${data.phone}\n`;
-                msg += `🏠 *Alamat:* ${data.address}\n`;
-                msg += `----------------------------------\n`;
-                msg += `🛍️ *Detail Pesanan:*\n${itemsList}`;
-                msg += `----------------------------------\n`;
-                msg += `💰 *Total Tagihan:* Rp ${total.toLocaleString('id-ID')}\n`;
-                msg += `💳 *Metode:* ${dbMethod}\n`;
-                if(data.note) msg += `📝 *Catatan:* ${data.note}\n`;
-                msg += `\nMohon diproses ya, Terima Kasih!`;
-
-                // 3. RESET CART & BUKA WA
+            if(result.success) {
+                showSuccessScreen(result.order_number, result.queue_number);
+                
+                let wa = `Halo Admin Zulaeha Tailor! Saya konfirmasi order #${result.order_number}.\n\n`;
+                wa += `Nama: ${data.name}\nTotal: Rp ${total.toLocaleString('id-ID')}\nMetode: ${methodDb}\n`;
+                window.open(`https://wa.me/${ADMIN_WA_NUMBER}?text=${encodeURIComponent(wa)}`, '_blank');
+                
                 cart = []; saveCartState(); updateCartCount();
-                
-                // Menggunakan encodeURIComponent agar rapi
-                window.open(`https://wa.me/${ADMIN_WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
-                
-                showOrderSuccess(result, data.name, data.email, data.phone, data.note, dbMethod, total);
-
             } else {
-                alert('Gagal: ' + (result.message || 'Error tidak diketahui'));
-                btn.innerHTML = 'Coba Lagi';
-                btn.disabled = false;
+                alert('Gagal: ' + result.message);
+                btn.disabled = false; btn.innerHTML = 'Coba Lagi';
             }
-        } catch (error) {
-            console.error(error);
-            alert('Terjadi kesalahan koneksi.');
-            btn.innerHTML = 'Coba Lagi';
-            btn.disabled = false;
+        } catch(e) {
+            console.error(e);
+            alert('Gagal koneksi.');
+            btn.disabled = false; btn.innerHTML = 'Coba Lagi';
         }
     }
 
-    // ============================================================
-    // 6. SUKSES PAGE
-    // ============================================================
-    function showOrderSuccess(res, name, email, phone, note, method, totalAmount) {
-        // Simpan data order untuk fitur Print (menggunakan total yang sudah dihitung)
-        window.currentOrder = {
-            orderNumber: res.order_number, queueNumber: res.queue_number,
-            name, email, phone, note, method,
-            cart: [], // Cart sudah kosong, jika ingin print detail harus diambil sebelum reset (tapi ini page sukses sederhana)
-            total: totalAmount || 0,
-            date: new Date()
-        };
+    function showSuccessScreen(orderNo, queueNo) {
+        const body = document.getElementById('cartBody');
+        document.getElementById('modalTitle').innerText = 'Pesanan Berhasil!';
+        document.querySelector('.close-modal').style.display = 'none';
 
-        const content = document.getElementById('cartContent');
-        document.querySelector('.modal-header h2').innerText = "Pesanan Berhasil!";
-
-        content.innerHTML = `
-            <div class="order-success">
-                <h2>✅ Pesanan Terkirim!</h2>
-                <div class="queue-number">
-                    <h3>ANTRIAN ANDA</h3>
-                    <div class="queue-display">#${res.queue_number}</div>
+        body.innerHTML = `
+            <div style="text-align:center; padding:1rem;">
+                <div style="font-size:3rem; color:#4CAF50; margin-bottom:1rem;"><i class="fa-solid fa-circle-check"></i></div>
+                <h3>Terima Kasih!</h3>
+                <p>Pesanan Anda telah diterima.</p>
+                <div class="queue-ticket">
+                    <p style="color:#999; font-size:0.9rem; text-transform:uppercase; letter-spacing:1px;">Nomor Antrian</p>
+                    <div class="queue-value">#${queueNo}</div>
+                    <p style="font-size:0.8rem; margin-top:10px;">Kode Order: ${orderNo}</p>
                 </div>
-                <p>Data pesanan telah disimpan dan WhatsApp Admin akan terbuka otomatis.</p>
-                <div class="order-summary-box">
-                    <p><strong>Kode:</strong> ${res.order_number}</p>
-                    <p><strong>Metode:</strong> ${method}</p>
-                    <p><strong>Total:</strong> Rp ${parseInt(totalAmount).toLocaleString('id-ID')}</p>
-                </div>
-                <div style="margin-top:20px; display:flex; gap:10px; justify-content:center;">
-                    <button class="checkout-btn" style="width:auto; padding:10px 20px; margin:0;" onclick="location.reload()">Selesai</button>
-                </div>
+                <button class="btn-block" onclick="location.reload()">Selesai & Belanja Lagi</button>
             </div>
         `;
     }
-    
-    // Utilities
-    function removeItem(i) { cart.splice(i, 1); saveCartState(); updateCartCount(); renderCartView(); }
-    document.getElementById('cartModal').addEventListener('click', function(e) { if(e.target===this) closeCart(); });
+
+    function removeItem(idx) {
+        cart.splice(idx, 1);
+        saveCartState(); updateCartCount(); renderCartStep();
+    }
 </script>
 </body>
 </html>
