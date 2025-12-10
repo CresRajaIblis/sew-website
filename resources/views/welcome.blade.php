@@ -395,7 +395,112 @@
 
     <script>
         // 1. DATA & VARIABEL GLOBAL
-        const products = @json($products);
+        const products = [
+        {
+            id: 1,
+            name: 'Rok Batik',
+            price: 350000,
+            oldPrice: null,
+            category: 'formal',
+            rating: 5,
+            reviews: 128,
+            desc: 'Rok Batik dengan potongan modern',
+            badge: 'best seller',
+            image: 'rokbatik.jpg', // Pastikan nama file sesuai
+            bg: 'formal-bg'
+        },
+        {
+            id: 2,
+            name: 'Dress Elegant',
+            price: 850000,
+            oldPrice: 950000,
+            category: 'premium',
+            rating: 5,
+            reviews: 245,
+            desc: 'Dress eksklusif Modern',
+            badge: 'hot',
+            image: 'dresssasap.jpg',
+            bg: 'premium-bg'
+        },
+        {
+            id: 3,
+            name: 'Kebaya Set',
+            price: 280000,
+            oldPrice: null,
+            category: 'casual',
+            rating: 5,
+            reviews: 89,
+            desc: 'Set Kebaya nyaman dengan potongan modern ',
+            badge: 'new',
+            image: 'kebayasasap.jpg',
+            bg: 'casual-bg'
+        },
+        {
+            id: 4,
+            name: 'Dress Elegant Evening',
+            price: 420000,
+            oldPrice: 600000,
+            category: 'formal', // Dress masuk kategori formal
+            rating: 5,
+            reviews: 156,
+            desc: 'Dress elegan untuk acara spesial',
+            badge: 'sale',
+            image: 'dress.jpg',
+            bg: 'dress-bg'
+        },
+        {
+            id: 5,
+            name: 'Batik Modern Kombinasi',
+            price: 450000,
+            oldPrice: null,
+            category: 'formal', // Batik bisa masuk formal/casual
+            rating: 5,
+            reviews: 203,
+            desc: 'Batik modern dengan sentuhan kontemporer',
+            badge: null,
+            image: 'batik.jpg',
+            bg: 'batik-bg'
+        },
+        {
+            id: 6,
+            name: 'Complete Suit Package',
+            price: 1250000,
+            oldPrice: null,
+            category: 'premium',
+            rating: 5,
+            reviews: 178,
+            desc: 'Paket lengkap suit untuk acara formal',
+            badge: 'limited',
+            image: 'jas.jpg',
+            bg: 'suit-bg'
+        },
+        {
+            id: 7,
+            name: 'Casual',
+            price: 125000,
+            oldPrice: null,
+            category: 'casual',
+            rating: 5,
+            reviews: 178,
+            desc: 'Paket lengkap suit untuk acara formal',
+            badge: null,
+            image: 'casual.jpg',
+            bg: 'suit-bg'   
+        },
+        {
+            id: 8,
+            name: 'Premium',
+            price: 125000,
+            oldPrice: null,
+            category: 'Formal',
+            rating: 5,
+            reviews: 178,
+            desc: 'Dress elegan untuk acara spesial',
+            badge: 'new',
+            image: 'dress.jpg',
+            bg: 'dress-bg'   
+        }
+    ];
         const ADMIN_WA_NUMBER = '6281373677824'; 
         const csrfToken = '{{ csrf_token() }}';
         const placeOrderUrl = '{{ route("checkout.process") }}';

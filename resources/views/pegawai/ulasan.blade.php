@@ -509,24 +509,31 @@
 <body>
 
   <nav class="sidebar">
-    <div class="greeting">Hello {{ Auth::user()->name ?? 'Pegawai' }}</div>
-    <a href="{{ route('pegawai.dashboard') }}" class="menu-pesanan">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0-4h2V7H3v2zm0 8h2v-2H3v2zm4-8h14V7H7v2zm0 4h14v-2H7v2zm0 4h14v-2H7v2z"/></svg>
-      Pesanan
-    </a>
-    <a href="{{ route('pegawai.ulasan') }}" class="active menu-ulasan">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 10h-4V6H7v4H3v2h4v4h6v-4h4v-2z"/></svg>
-      Ulasan
-    </a>
-    <div class="account">
-      <span>{{ Auth::user()->username ?? 'pegawai' }}.acc</span>
-      <!-- Tombol Logout memicu Modal -->
-      <button class="logout" id="logoutBtn" title="Log Out">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M497 273l-96 96c-9 9-24 3-24-10v-59H192v-32h185v-59c0-13 15-19 24-10l96 96c9 9 9 24 0 33zM288 432H96c-18 0-32-14-32-32v-256c0-18 14-32 32-32h192c8 0 15-7 15-15s-7-15-15-15H96c-40 0-72 32-72 72v256c0 40 32 72 72 72h192c8 0 15-7 15-15s-7-15-15-15z"/></svg>
-        Log Out
-      </button>
-    </div>
-  </nav>
+  <div class="greeting">Hello Pegawai</div>
+  
+  <!-- Link Dashboard (Aktif) -->
+  <a href="{{ route('pegawai.dashboard') }}">
+   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0-4h2V7H3v2zm0 8h2v-2H3v2zm4-8h14V7H7v2zm0 4h14v-2H7v2zm0 4h14v-2H7v2z"/></svg>
+   Pesanan
+  </a>
+
+  <!-- Link Ulasan -->
+  <a href="{{ route('pegawai.ulasan') }}" class="active">
+   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+    <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm.93 4.412a.5.5 0 0 1 .91.417l-1 3a.5.5 0 0 1-.91.083l-1.5-2a.5.5 0 1 1 .8-.6l.457.61 1.243-1.51z"/>
+   </svg>
+   Ulasan
+  </a>
+
+  <div class="account">
+   <span>{{ Auth::user()->username }}.acc</span>
+   <!-- Tombol Logout memicu Modal -->
+   <button class="logout" id="logoutBtn" title="Log Out">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M497 273l-96 96c-9 9-24 3-24-10v-59H192v-32h185v-59c0-13 15-19 24-10l96 96c9 9 9 24 0 33zM288 432H96c-18 0-32-14-32-32v-256c0-18 14-32 32-32h192c8 0 15-7 15-15s-7-15-15-15H96c-40 0-72 32-72 72v256c0 40 32 72 72 72h192c8 0 15-7 15-15s-7-15-15-15z"/></svg>
+    Log Out
+   </button>
+  </div>
+ </nav>
 
   <main class="content">
     <div class="header-top">
